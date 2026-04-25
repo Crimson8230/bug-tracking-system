@@ -4,10 +4,28 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 
 ## Techstack
 
+Bootstrapped using **Spring Initializr**. The following core dependencies are integrated into the project:
+
+* **Spring Web:** For building RESTful API endpoints.
+* **Spring Data JPA:** An abstraction layer for database access (ORM with Hibernate).
+* **PostgreSQL Driver:** JDBC driver for establishing database connections.
+* **Lombok:** To reduce boilerplate code (automatic generation of getters, setters, and constructors).
+* **Validation:** For validating user input via annotations (e.g., `@NotNull`).
+
 - **Backend:** Java 21 / Spring Boot
-- **Security:** Spring Security // schau mor mol...
+- **Security:** Spring Security
 - **Database:** PostgreSQL (via Docker)
 - **Build Tool:** Maven
+
+
+## Development Process
+
+### 1. Prerequisites
+
+* **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
+* **Docker & Docker Compose:** Required for containerization and local database management.
+* **IDE:** An Integrated Development Environment (IntelliJ IDEA is highly recommended).
+
 
 ## Setup & Start
 
@@ -19,12 +37,12 @@ cd bug-tracking-system
 ```
 
 2. **Start infrastructure:**
-   Make sure Docker is running and start the database:
-   `docker-compose up -d`
+   Make sure Docker is running and start the database:
+   `docker-compose up -d`
 
 3. **Start application:**
-   Use the Maven Wrapper to build and start the app:
-   `./mvnw spring-boot:run`
+   Use the Maven Wrapper to build and start the app:
+   `./mvnw spring-boot:run`
 
 ## API Documentation
 
