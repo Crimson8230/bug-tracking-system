@@ -42,12 +42,16 @@ cd bug-tracking-system
 
 3. **Start application:**
    Use the Maven Wrapper to build and start the app:
-   `./mvnw spring-boot:run`
+   # Windows (PowerShell)
+   `.\mvnw.cmd spring-boot:run`
+
+   # Linux / Mac / Git Bash
+   `./mvnw spring-boot:run`
 
 ## API Documentation
 
 Once the app is running, you can find the Swagger UI at:
-`http://localhost:8080/swagger-ui.html`
+`http://localhost:8080/swagger-ui/index.html`
 
 ## Git & Commit Guidelines
 
