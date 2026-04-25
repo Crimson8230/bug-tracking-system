@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+*.lst
 
 # BlueJ files
 *.ctxt
@@ -30,6 +31,18 @@ replay_pid*
 .settings/
 .project/
 .classpath/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.nextSnapshot
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
 # System
 .DS_Store
