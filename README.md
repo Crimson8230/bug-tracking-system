@@ -1,8 +1,6 @@
-# bug-tracking-system
+# Bug Tracking Application (Software Engineering 2)
 
 Issue management backend. Features a layered architecture, Spring Security, and automated CI/CD workflows. Developed as a semester project for SWE2
-
-# Bug Tracking Application (Software Engineering 2)
 
 ## Techstack
 
