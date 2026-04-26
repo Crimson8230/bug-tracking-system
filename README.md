@@ -44,16 +44,12 @@ cd bug-tracking-system
    Use the Maven Wrapper to build and start the app:
 
    **Windows (PowerShell):**
-   ```powershell
-   .\mvnw.cmd spring-boot:run
-   ```
+   `.\mvnw.cmd spring-boot:run`
 
    **Linux / Mac / Git Bash:**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+   `./mvnw spring-boot:run`
 
-3. **Start application:**
+4. **Start application:**
    Use the Maven Wrapper to build and start the app:
    # Windows (PowerShell)
    `.\mvnw.cmd spring-boot:run`
