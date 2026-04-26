@@ -53,21 +53,6 @@ cd bug-tracking-system
    ./mvnw spring-boot:run
    ```
 
-### Warum das besser ist:
-1. **Syntax Highlighting:** Durch das Wort `powershell` oder `bash` nach den ersten drei Backticks erkennt GitHub, wie es den Code farblich markieren soll.
-2. **Abstand:** Die Leerzeilen zwischen dem Text und den Code-Blöcken verhindern, dass Markdown alles in eine Zeile "quetscht".
-3. **Lesbarkeit:** Die fetten Überschriften (**Windows**) trennen die Welten optisch sauberer.
-
-
-
-### Ein kleiner "Sneaky"-Fehler:
-Falls du die Datei in VS Code bearbeitest: Achte darauf, dass vor den Backticks keine unnötigen Leerzeichen stehen, sonst denkt Markdown manchmal, es sei ein Zitat und kein Code-Block.
-
-Wenn du das so einfügst, sieht es auf GitHub richtig professionell aus. Probier es mal aus und schau dir die Vorschau (Preview) in VS Code oder direkt auf GitHub an! 
-
-Gute Nacht (jetzt aber wirklich)! 🌙
-
-
 3. **Start application:**
    Use the Maven Wrapper to build and start the app:
    # Windows (PowerShell)
