@@ -2,20 +2,25 @@
 
 Issue management backend. Features a layered architecture, Spring Security, and automated CI/CD workflows. Developed as a semester project for SWE2
 
-## Techstack
+## Tech Stack & Architecture
 
-Bootstrapped using **Spring Initializr**. The following core dependencies are integrated into the project:
+### Backend Core
+- **Java 21 / Spring Boot 3.x:** Core framework for the application.
+- **Spring Security:** Handles authentication and authorization.
+- **Maven:** Dependency management and build automation.
 
-* **Spring Web:** For building RESTful API endpoints.
-* **Spring Data JPA:** An abstraction layer for database access (ORM with Hibernate).
-* **PostgreSQL Driver:** JDBC driver for establishing database connections.
-* **Lombok:** To reduce boilerplate code (automatic generation of getters, setters, and constructors).
-* **Validation:** For validating user input via annotations (e.g., `@NotNull`).
+### Data & Persistence
+- **PostgreSQL:** Primary relational database.
+- **Spring Data JPA:** ORM layer (Hibernate) for database interactions.
+- **Docker & Docker Compose:** Containerization for database and management tools.
 
-- **Backend:** Java 21 / Spring Boot
-- **Security:** Spring Security
-- **Database:** PostgreSQL (via Docker)
-- **Build Tool:** Maven
+### Integrated Dependencies (Spring Initializr)
+- **Spring Web:** For building RESTful API endpoints.
+- **Lombok:** Reduces boilerplate code (Generates getters, setters, etc.).
+- **Validation:** Ensures data integrity via annotations (e.g., `@NotNull`).
+- **SpringDoc OpenAPI:** Automatically generates Swagger UI documentation.
+
+
 
 
 ## Development Process
