@@ -49,14 +49,6 @@ cd bug-tracking-system
    **Linux / Mac / Git Bash:**
    `./mvnw spring-boot:run`
 
-4. **Start application:**
-   Use the Maven Wrapper to build and start the app:
-   # Windows (PowerShell)
-   `.\mvnw.cmd spring-boot:run`
-
-   # Linux / Mac / Git Bash
-   `./mvnw spring-boot:run`
-
 ## API Documentation
 
 Once the app is running, you can find the Swagger UI at:
