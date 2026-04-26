@@ -53,6 +53,15 @@ cd bug-tracking-system
 Once the app is running, you can find the Swagger UI at:
 `http://localhost:8080/swagger-ui/index.html`
 
+## Database Management
+
+To visualize and manage the database, **pgAdmin 4** is provided via Docker.
+
+1. **Access:** Open `http://localhost:8081`
+2. **pgAdmin Login:** `admin@admin.com` / `admin`
+3. **DB Access:** Click on the pre-configured `BugTracker-DB`.
+   - **Password:** `password`
+
 ## Git & Commit Guidelines
 
 We use the **Conventional Commits** format:
