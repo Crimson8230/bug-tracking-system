@@ -24,7 +24,7 @@ Bootstrapped using **Spring Initializr**. The following core dependencies are in
 
 * **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
 * **Docker & Docker Compose:** Required for containerization and local database management.
-* **IDE:** An Integrated Development Environment (IntelliJ IDEA is highly recommended).
+* **IDE:** IntelliJ, VsCode or Eclipse pick your poison
 
 
 ## Setup & Start
