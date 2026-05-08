@@ -6,45 +6,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
-    private final TicketRepository repo;
+    private final TicketService service;
 
-    public TicketController(TicketRepository repo) {
-        this.repo = repo;
+    public TicketController(TicketService service) {
+        this.service = service;
     }
 
     @PostMapping
     public Ticket create(@RequestBody Ticket ticket) {
-        return repo.save(ticket);
+        return service.create(ticket);
     }
 
     @GetMapping
     public List<Ticket> getAllTickets() {
-        return repo.findAll();
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
     public Ticket getById(@PathVariable Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        return service.getById(id);
     }
 
     @PutMapping("/{id}")
     public Ticket update(@PathVariable Long id, @RequestBody Ticket updated) {
-
-        Ticket existing = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
-
-        existing.setTitle(updated.getTitle());
-        existing.setDescription(updated.getDescription());
-        existing.setStatus(updated.getStatus());
-        existing.setPriority(updated.getPriority());
-
-        return repo.save(existing);
+        return service.update(id, updated);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        repo.deleteById(id);
+        service.delete(id);
     }
-
 }
