@@ -29,8 +29,7 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 
 * **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
 * **Docker & Docker Compose:** Required for containerization and local database management.
-* **IDE:** IntelliJ, VsCode or Eclipse pick your poison
-
+* **IDE:** IntelliJ, VsCode or Eclipse pick your poison and install Lombok plugin otherwise getters/setters will be missing
 
 ## Setup & Start
 
