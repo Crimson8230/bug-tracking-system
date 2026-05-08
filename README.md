@@ -48,6 +48,8 @@ cd bug-tracking-system
 3. **Start application:**
    Use the Maven Wrapper to build and start the app:
 
+   `cd backend`
+
    **Windows (PowerShell):**
    `.\mvnw.cmd spring-boot:run`
 
