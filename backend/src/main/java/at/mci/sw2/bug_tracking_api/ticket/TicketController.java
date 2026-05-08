@@ -22,4 +22,29 @@ public class TicketController {
         return repo.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Ticket getById(@PathVariable Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    }
+
+    @PutMapping("/{id}")
+    public Ticket update(@PathVariable Long id, @RequestBody Ticket updated) {
+
+        Ticket existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        existing.setTitle(updated.getTitle());
+        existing.setDescription(updated.getDescription());
+        existing.setStatus(updated.getStatus());
+        existing.setPriority(updated.getPriority());
+
+        return repo.save(existing);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        repo.deleteById(id);
+    }
+
 }

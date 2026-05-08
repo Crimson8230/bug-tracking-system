@@ -2,10 +2,11 @@ package at.mci.sw2.bug_tracking_api.ticket;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "ticket")
-
+@Data
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +29,4 @@ public class Ticket {
 
     @Column
     private LocalDateTime updated_at;
-
 }
