@@ -1,6 +1,7 @@
 package at.mci.sw2.bug_tracking_api.ticket;
 
 import java.util.List;
+import java.util.Set;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,5 +36,10 @@ public class TicketController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/{id}/allowed-next-status")
+    public Set<TicketStatus.Status> getAllowedStatuses(@PathVariable Long id) {
+        return service.getById(id).getStatus().getNextAllowedStatuses();
     }
 }
