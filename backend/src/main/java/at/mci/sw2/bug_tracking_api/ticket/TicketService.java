@@ -28,6 +28,11 @@ public class TicketService {
         Ticket existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
+        // check Status transition
+        if (!existing.getStatus().canTransitionTo(updated.getStatus())) {
+            throw new RuntimeException("Status transition from " + existing.getStatus() + " to " + updated.getStatus() + " is not allowed");
+        }
+
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
         existing.setStatus(updated.getStatus());
