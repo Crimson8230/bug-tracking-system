@@ -1,71 +1,39 @@
 import { LogOut, Bug, Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {getTickets} from "../API/tickets";
 
-type TicketStatus = "Neu" | "In Analyse" | "In Bearbeitung" | "Erledigt" | "Abgelehnt";
-type Priority = "Kritisch" | "Hoch" | "Normal" | "Niedrig";
-
-type Ticket = {
-    id: string;
+type BackendTicket = {
+    ticket_id: number;
     title: string;
-    status: TicketStatus;
-    priority: Priority;
-    assignee: string;
-    createdAt: string;
+    description: string;
+    status: "OPEN" | "IN_ANALYSIS" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+    priority: "LOW" | "MEDIUM" | "HIGH";
+    created_at: string;
+    updated_at?: string;
 };
-
-const tickets: Ticket[] = [
-    {
-        id: "#0075",
-        title: "Login schlägt bei LDAP-Timeout fehl",
-        status: "In Bearbeitung",
-        priority: "Kritisch",
-        assignee: "Alex Reister",
-        createdAt: "07.05.2026",
-    },
-    {
-        id: "#0074",
-        title: "Dashboard lädt Statistik nicht vollständig",
-        status: "In Analyse",
-        priority: "Hoch",
-        assignee: "Daniel Riml",
-        createdAt: "07.05.2026",
-    },
-    {
-        id: "#0073",
-        title: "Kommentar wird nach Speichern nicht angezeigt",
-        status: "Neu",
-        priority: "Normal",
-        assignee: "Nicht zugewiesen",
-        createdAt: "06.05.2026",
-    },
-    {
-        id: "#0072",
-        title: "Dateiupload akzeptiert ungültigen Dateityp",
-        status: "In Bearbeitung",
-        priority: "Hoch",
-        assignee: "Simon Wabnig",
-        createdAt: "06.05.2026",
-    },
-    {
-        id: "#0071",
-        title: "Suchfunktion findet Begriffe in Kommentaren nicht",
-        status: "Neu",
-        priority: "Niedrig",
-        assignee: "Nicht zugewiesen",
-        createdAt: "05.05.2026",
-    },
-];
-
-function priorityClass(priority: Priority) {
-    return `priority priority-${priority.toLowerCase()}`;
-}
-
-function statusClass(status: TicketStatus) {
-    return `status status-${status.toLowerCase().replace(" ", "-")}`;
-}
 
 export default function BugOverviewPage() {
     const navigate = useNavigate();
+    const [tickets, setTickets] = useState<BackendTicket[]>([]);
+
+    useEffect(() => {
+        getTickets()
+            .then(setTickets)
+            .catch(console.error);
+    }, []);
+
+    const openTicketsCount = tickets.filter(
+        (ticket) => ticket.status !== "DONE" && ticket.status !== "CANCELLED"
+    ).length;
+
+    const criticalTicketsCount = tickets.filter(
+        (ticket) => ticket.priority === "HIGH"
+    ).length;
+
+    const inProgressTicketsCount = tickets.filter(
+        (ticket) => ticket.status === "IN_PROGRESS"
+    ).length;
 
     return (
         <main className="overview-page">
@@ -116,15 +84,17 @@ export default function BugOverviewPage() {
                 <section className="stats-grid">
                     <article className="stat-card">
                         <span>Offene Tickets</span>
-                        <strong>42</strong>
+                        <strong>{openTicketsCount}</strong>
                     </article>
+
                     <article className="stat-card">
                         <span>Kritisch</span>
-                        <strong>5</strong>
+                        <strong>{criticalTicketsCount}</strong>
                     </article>
+
                     <article className="stat-card">
                         <span>In Bearbeitung</span>
-                        <strong>13</strong>
+                        <strong>{inProgressTicketsCount}</strong>
                     </article>
                 </section>
 
@@ -156,13 +126,13 @@ export default function BugOverviewPage() {
                         </div>
 
                         {tickets.map((ticket) => (
-                            <div className="ticket-row" key={ticket.id}>
-                                <span className="ticket-id">{ticket.id}</span>
+                            <div className="ticket-row" key={ticket.ticket_id}>
+                                <span className="ticket-id">#{ticket.ticket_id}</span>
                                 <span className="ticket-title">{ticket.title}</span>
-                                <span><span className={statusClass(ticket.status)}>{ticket.status}</span></span>
-                                <span><span className={priorityClass(ticket.priority)}>{ticket.priority}</span></span>
-                                <span>{ticket.assignee}</span>
-                                <span>{ticket.createdAt}</span>
+                                <span>{ticket.status}</span>
+                                <span>{ticket.priority}</span>
+                                <span>Nicht zugewiesen</span>
+                                <span>{new Date(ticket.created_at).toLocaleDateString("de-DE")}</span>
                             </div>
                         ))}
                     </div>

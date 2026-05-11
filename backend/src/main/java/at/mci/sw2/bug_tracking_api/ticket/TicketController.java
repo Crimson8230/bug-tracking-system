@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
