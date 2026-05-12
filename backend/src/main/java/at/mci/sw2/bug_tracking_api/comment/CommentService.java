@@ -29,7 +29,6 @@ public class CommentService extends AbstractCrudService<Comment, Long> {
         Comment existing = getById(id);
 
         existing.setContent(updated.getContent());
-        existing.setCreatedAt(updated.getCreatedAt());
 
         if (updated.getTicket() != null && updated.getTicket().getTicketId() != null) {
             existing.setTicket(getTicket(updated.getTicket().getTicketId()));
