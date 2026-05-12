@@ -1,34 +1,35 @@
-package at.mci.sw2.bug_tracking_api.ticket;
+package at.mci.sw2.bug_tracking_api.role;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tickets")
-public class TicketController {
-    private final TicketService service;
+@RequestMapping("/roles")
+public class RoleController {
 
-    public TicketController(TicketService service) {
+    private final RoleService service;
+
+    public RoleController(RoleService service) {
         this.service = service;
     }
 
     @PostMapping
-    public Ticket create(@RequestBody Ticket ticket) {
-        return service.create(ticket);
+    public Role create(@RequestBody Role role) {
+        return service.create(role);
     }
 
     @GetMapping
-    public List<Ticket> getAllTickets() {
+    public List<Role> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public Ticket getById(@PathVariable Long id) {
+    public Role getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PutMapping("/{id}")
-    public Ticket update(@PathVariable Long id, @RequestBody Ticket updated) {
+    public Role update(@PathVariable Long id, @RequestBody Role updated) {
         return service.update(id, updated);
     }
 

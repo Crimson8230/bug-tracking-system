@@ -3,6 +3,8 @@ package at.mci.sw2.bug_tracking_api.ticket;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
+import at.mci.sw2.bug_tracking_api.user.User;
+import at.mci.sw2.bug_tracking_api.category.Category;
 
 @Entity
 @Table(name = "ticket")
@@ -10,7 +12,8 @@ import lombok.Data;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ticket_id;
+    @Column(name = "ticket_id")
+    private Long ticketId;
 
     @Column(nullable = false)
     private String title;
@@ -24,9 +27,21 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketPriority.Priority priority;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-    @Column
-    private LocalDateTime updated_at;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "reported_by")
+    private User reportedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
