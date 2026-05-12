@@ -23,8 +23,8 @@ public class User {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
-    @Column(nullable = false)
-    private boolean active = true;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
