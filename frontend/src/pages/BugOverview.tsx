@@ -2,6 +2,8 @@ import { LogOut, Bug, Filter, Plus, Search, SlidersHorizontal } from "lucide-rea
 import { useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import {getTickets} from "../API/tickets";
+import TicketDetailModal from "../components/TicketDetailModal";
+import {ReportBugForm} from "../components/ReportBugModal";
 
 type BackendTicket = {
     ticket_id: number;
@@ -14,8 +16,13 @@ type BackendTicket = {
 };
 
 export default function BugOverviewPage() {
+
     const navigate = useNavigate();
     const [tickets, setTickets] = useState<BackendTicket[]>([]);
+    const [showReportBugModal, setShowReportBugModal] = useState(false);
+    const [selectedTicket, setSelectedTicket] =
+        useState<BackendTicket | null>(null);
+
 
     useEffect(() => {
         getTickets()
@@ -74,7 +81,7 @@ export default function BugOverviewPage() {
                     <button
                         className="primary-button"
                         type="button"
-                        onClick={() => navigate("/report")}
+                        onClick={() => setShowReportBugModal(true)}
                     >
                         <Plus size={18} />
                         Report Bug
@@ -126,18 +133,42 @@ export default function BugOverviewPage() {
                         </div>
 
                         {tickets.map((ticket) => (
-                            <div className="ticket-row" key={ticket.ticket_id}>
+                            <div className="ticket-row" key={ticket.ticket_id}
+                                onClick={() => setSelectedTicket(ticket)}>
                                 <span className="ticket-id">#{ticket.ticket_id}</span>
                                 <span className="ticket-title">{ticket.title}</span>
                                 <span>{ticket.status}</span>
                                 <span>{ticket.priority}</span>
                                 <span>Nicht zugewiesen</span>
-                                <span>{new Date(ticket.created_at).toLocaleDateString("de-DE")}</span>
+                                <span>
+                                    {new Date(ticket.created_at).toLocaleDateString("de-DE")}
+                                </span>
                             </div>
                         ))}
                     </div>
                 </section>
             </section>
+            <TicketDetailModal
+                ticket={selectedTicket}
+                onClose={() => setSelectedTicket(null)}
+            />
+            {showReportBugModal && (
+                <div
+                    className="modal-backdrop"
+                    onClick={() => setShowReportBugModal(false)}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <ReportBugForm
+                            asModal
+                            onClose={() => setShowReportBugModal(false)}
+                            onCreated={() => {
+                                setShowReportBugModal(false);
+                                getTickets();
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
