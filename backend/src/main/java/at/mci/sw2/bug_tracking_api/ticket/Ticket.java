@@ -22,9 +22,11 @@ public class Ticket {
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TicketStatus.Status status;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TicketPriority.Priority priority;
 
     @Column(name = "created_at", nullable = false)
@@ -34,7 +36,7 @@ public class Ticket {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "reported_by")
+    @JoinColumn(name = "reported_by", nullable = false)
     private User reportedBy;
 
     @ManyToOne
@@ -42,6 +44,22 @@ public class Ticket {
     private User assignedTo;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_ticket_id")
+    private Ticket parentTicket;
+
+    @PrePersist
+    void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
