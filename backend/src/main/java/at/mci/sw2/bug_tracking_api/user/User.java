@@ -2,6 +2,7 @@ package at.mci.sw2.bug_tracking_api.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import at.mci.sw2.bug_tracking_api.role.Role;
 
 @Entity
 @Table(name = "user")
@@ -24,4 +25,8 @@ public class User {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }
