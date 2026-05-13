@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/attachments")
+@RequestMapping("/api/v1/attachments")
 @RequiredArgsConstructor
 @Slf4j
 public class AttachmentController {
@@ -46,12 +46,6 @@ public class AttachmentController {
         log.info("POST upload attachment for ticket: {}, user: {}", ticketId, userId);
         Attachment attachment = attachmentService.uploadAttachment(ticketId, userId, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(attachment);
-    }
-
-    @GetMapping("/ticket/{ticketId}")
-    public ResponseEntity<List<Attachment>> getByTicket(@PathVariable Long ticketId) {
-        log.info("GET attachments for ticket: {}", ticketId);
-        return ResponseEntity.ok(attachmentService.getAttachmentsByTicket(ticketId));
     }
 
     @PutMapping("/{id}")

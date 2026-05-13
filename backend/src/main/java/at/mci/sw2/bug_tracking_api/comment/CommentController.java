@@ -1,10 +1,13 @@
 package at.mci.sw2.bug_tracking_api.comment;
 
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
 
     private final CommentService service;
@@ -14,27 +17,28 @@ public class CommentController {
     }
 
     @PostMapping
-    public Comment create(@RequestBody Comment comment) {
-        return service.create(comment);
+    public ResponseEntity<Comment> create(@RequestBody Comment comment) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(comment));
     }
 
     @GetMapping
-    public List<Comment> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<Comment>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public Comment getById(@PathVariable Long id) {
-        return service.getById(id);
+    public ResponseEntity<Comment> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PutMapping("/{id}")
-    public Comment update(@PathVariable Long id, @RequestBody Comment updated) {
-        return service.update(id, updated);
+    public ResponseEntity<Comment> update(@PathVariable Long id, @RequestBody Comment updated) {
+        return ResponseEntity.ok(service.update(id, updated));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

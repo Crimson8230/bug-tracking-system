@@ -25,7 +25,7 @@ public abstract class AbstractCrudService<T, ID> implements CrudService<T, ID> {
     @Override
     public T getById(ID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Entity not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Entity with id " + id + " not found"));
     }
 
     @Override

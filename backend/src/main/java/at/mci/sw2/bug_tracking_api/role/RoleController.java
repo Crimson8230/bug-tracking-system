@@ -1,10 +1,13 @@
 package at.mci.sw2.bug_tracking_api.role;
 
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/api/v1/roles")
 public class RoleController {
 
     private final RoleService service;
@@ -14,27 +17,28 @@ public class RoleController {
     }
 
     @PostMapping
-    public Role create(@RequestBody Role role) {
-        return service.create(role);
+    public ResponseEntity<Role> create(@RequestBody Role role) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(role));
     }
 
     @GetMapping
-    public List<Role> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<Role>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public Role getById(@PathVariable Long id) {
-        return service.getById(id);
+    public ResponseEntity<Role> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PutMapping("/{id}")
-    public Role update(@PathVariable Long id, @RequestBody Role updated) {
-        return service.update(id, updated);
+    public ResponseEntity<Role> update(@PathVariable Long id, @RequestBody Role updated) {
+        return ResponseEntity.ok(service.update(id, updated));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
