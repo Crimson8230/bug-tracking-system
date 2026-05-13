@@ -1,47 +1,140 @@
 package at.mci.sw2.bug_tracking_api.ticket;
 
 import org.springframework.stereotype.Service;
+import at.mci.sw2.bug_tracking_api.common.AbstractCrudService;
+import at.mci.sw2.bug_tracking_api.common.ResourceNotFoundException;
+import at.mci.sw2.bug_tracking_api.category.Category;
+import at.mci.sw2.bug_tracking_api.category.CategoryRepository;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketCreateRequest;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketResponse;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketUpdateRequest;
+import at.mci.sw2.bug_tracking_api.user.User;
+import at.mci.sw2.bug_tracking_api.user.UserRepository;
+
 import java.util.List;
 
 @Service
-public class TicketService {
-    private final TicketRepository repo;
+public class TicketService extends AbstractCrudService<Ticket, Long> {
 
-    public TicketService(TicketRepository repo) {
-        this.repo = repo;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+
+    public TicketService(TicketRepository repository,
+            UserRepository userRepository,
+            CategoryRepository categoryRepository) {
+        super(repository);
+        this.ticketRepository = repository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public Ticket create(Ticket ticket) {
-        return repo.save(ticket);
+    public TicketResponse create(TicketCreateRequest request) {
+        Ticket ticket = new Ticket();
+
+        ticket.setTitle(request.title());
+        ticket.setDescription(request.description());
+        ticket.setPriority(request.priority() != null
+                ? request.priority()
+                : TicketPriority.Priority.MEDIUM);
+        ticket.setReportedBy(getUser(request.reportedById()));
+        ticket.setAssignedTo(request.assignedToId() != null
+                ? getUser(request.assignedToId())
+                : null);
+        ticket.setCategory(getCategory(request.categoryId()));
+        ticket.setParentTicket(request.parentTicketId() != null
+                ? getTicket(request.parentTicketId())
+                : null);
+
+        return toResponse(ticketRepository.save(ticket));
     }
 
-    public List<Ticket> getAll() {
-        return repo.findAll();
+    public List<TicketResponse> getAllTickets() {
+        return ticketRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Ticket getById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    public TicketResponse getTicketById(Long id) {
+        return toResponse(getTicket(id));
     }
 
-    public Ticket update(Long id, Ticket updated) {
-        Ticket existing = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    public TicketResponse update(Long id, TicketUpdateRequest request) {
+        Ticket existing = getTicket(id);
 
-        // check Status transition
-        if (!existing.getStatus().canTransitionTo(updated.getStatus())) {
-            throw new RuntimeException("Status transition from " + existing.getStatus() + " to " + updated.getStatus() + " is not allowed");
+        if (request.title() != null) {
+            existing.setTitle(request.title());
         }
+        if (request.description() != null) {
+            existing.setDescription(request.description());
+        }
+        if (request.status() != null) {
+            if (!existing.getStatus().canTransitionTo(request.status())) {
+                throw new IllegalArgumentException("Invalid status transition");
+            }
+            existing.setStatus(request.status());
+        }
+        if (request.priority() != null) {
+            existing.setPriority(request.priority());
+        }
+        if (request.assignedToId() != null) {
+            existing.setAssignedTo(getUser(request.assignedToId()));
+        }
+        if (request.categoryId() != null) {
+            existing.setCategory(getCategory(request.categoryId()));
+        }
+        if (request.parentTicketId() != null) {
+            existing.setParentTicket(getTicket(request.parentTicketId()));
+        }
+
+        return toResponse(ticketRepository.save(existing));
+    }
+
+    @Override
+    public Ticket update(Long id, Ticket updated) {
+        Ticket existing = getById(id);
 
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
-        existing.setStatus(updated.getStatus());
-        existing.setPriority(updated.getPriority());
 
-        return repo.save(existing);
+        return repository.save(existing);
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    private Ticket getTicket(Long id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket with id " + id + " not found"));
+    }
+
+    private User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+    }
+
+    private Category getCategory(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+    }
+
+    private TicketResponse toResponse(Ticket ticket) {
+        User reportedBy = ticket.getReportedBy();
+        User assignedTo = ticket.getAssignedTo();
+        Category category = ticket.getCategory();
+        Ticket parentTicket = ticket.getParentTicket();
+
+        return new TicketResponse(
+                ticket.getTicketId(),
+                ticket.getTitle(),
+                ticket.getDescription(),
+                ticket.getStatus(),
+                ticket.getPriority(),
+                ticket.getCreatedAt(),
+                ticket.getUpdatedAt(),
+                reportedBy != null ? reportedBy.getUserId() : null,
+                reportedBy != null ? reportedBy.getUsername() : null,
+                assignedTo != null ? assignedTo.getUserId() : null,
+                assignedTo != null ? assignedTo.getUsername() : null,
+                category != null ? category.getCategoryId() : null,
+                category != null ? category.getCategoryName() : null,
+                parentTicket != null ? parentTicket.getTicketId() : null);
     }
 }

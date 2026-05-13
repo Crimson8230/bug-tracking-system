@@ -1,0 +1,51 @@
+name: Notify CI Status
+
+on:
+  workflow_run:
+    workflows: ["CI Build"]
+    types:
+      - completed
+
+jobs:
+  notify-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check previous workflow status
+        id: previous
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: context.payload.workflow_run.workflow_id,
+              per_page: 2
+            });
+
+            const previousRun = runs.data.workflow_runs[1];
+
+            core.setOutput(
+              "previous_conclusion",
+              previousRun ? previousRun.conclusion : "none"
+            );
+
+      - name: Notify failure
+        if: github.event.workflow_run.conclusion == 'failure'
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "CI Build fehlgeschlagen\nRepo: ${{ github.repository }}\nBranch: ${{ github.event.workflow_run.head_branch }}"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notify recovery
+        if: github.event.workflow_run.conclusion == 'success' && steps.previous.outputs.previous_conclusion == 'failure'
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "CI wieder erfolgreich\nRepo: ${{ github.repository }}\nBranch: ${{ github.event.workflow_run.head_branch }}"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}

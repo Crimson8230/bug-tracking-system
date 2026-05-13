@@ -17,6 +17,7 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 ### Data & Persistence
 - **PostgreSQL:** Primary relational database.
 - **Spring Data JPA:** ORM layer (Hibernate) for database interactions.
+- **H2 Database:** Lightweight in-memory database used for testing.
 - **Docker & Docker Compose:** Containerization for database and management tools.
 
 ### Integrated Dependencies (Spring Initializr)
@@ -34,7 +35,8 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 
 * **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
 * **Docker & Docker Compose:** Required for containerization and local database management.
-* **IDE:** IntelliJ, VsCode or Eclipse pick your poison and install Lombok plugin otherwise getters/setters will be missing
+* **IDE:** IntelliJ, VsCode or Eclipse pick your poison 
+* **Lombok** Install Lombok plugin in your IDE otherwise getters/setters may appear missing
 * **Node.js (>=18 recommended):** Required for frontend development.
 
 ## Setup & Start
@@ -76,6 +78,14 @@ To visualize and manage the database, **pgAdmin 4** is provided via Docker.
 2. **pgAdmin Login:** `admin@admin.com` / `admin`
 3. **DB Access:** Click on the pre-configured `BugTracker-DB`.
    - **Password:** `password`
+
+## Testing
+
+The project uses:
+
+- **JUnit 5 for unit testing**
+- **Spring Boot Test for integration testing**
+- **H2 Database as an isolated in-memory test database**
 
 ## Git & Commit Guidelines
 

@@ -4,6 +4,10 @@ on:
   push:
     branches: [main, dev]
   pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
 
 jobs:
   build:
@@ -22,6 +26,6 @@ jobs:
         working-directory: backend
         run: chmod +x mvnw
 
-      - name: Build (skip tests for now)
+      - name: Build and test
         working-directory: backend
-        run: ./mvnw clean compile -DskipTests
+        run: ./mvnw clean verify
