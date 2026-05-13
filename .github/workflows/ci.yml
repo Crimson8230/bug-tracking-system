@@ -4,6 +4,10 @@ on:
   push:
     branches: [main, dev]
   pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
 
 jobs:
   build:
@@ -25,3 +29,32 @@ jobs:
       - name: Build (skip tests for now)
         working-directory: backend
         run: ./mvnw clean compile -DskipTests
+
+  notify-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Discord PR
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "PushRequest wartet auf Review\n Autor: ${{ github.actor }}\n Branch: ${{ github.head_ref }}\n ${{ github.event.pull_request.html_url }}"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+  notify-failure:
+    needs: build
+    if: failure()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Discord Failure
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "CI Build fehlgeschlagen\n Repo: ${{ github.repository }}\n User: ${{ github.actor }}\n Branch: ${{ github.ref_name }}"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
