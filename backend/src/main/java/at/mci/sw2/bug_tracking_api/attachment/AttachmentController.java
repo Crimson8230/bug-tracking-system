@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentResponse;
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentUpdateRequest;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/attachments")
 @RequiredArgsConstructor
@@ -27,31 +31,33 @@ public class AttachmentController {
     private final AttachmentService attachmentService;
 
     @GetMapping
-    public ResponseEntity<List<Attachment>> getAll() {
+    public ResponseEntity<List<AttachmentResponse>> getAll() {
         log.info("GET all attachments");
-        return ResponseEntity.ok(attachmentService.getAll());
+        return ResponseEntity.ok(attachmentService.getAllAttachments());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Attachment> getById(@PathVariable Long id) {
+    public ResponseEntity<AttachmentResponse> getById(@PathVariable Long id) {
         log.info("GET attachment by id: {}", id);
-        return ResponseEntity.ok(attachmentService.getById(id));
+        return ResponseEntity.ok(attachmentService.getAttachmentById(id));
     }
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Attachment> upload(
+    public ResponseEntity<AttachmentResponse> upload(
             @RequestParam Long ticketId,
             @RequestParam Long userId,
             @RequestParam("file") MultipartFile file) {
         log.info("POST upload attachment for ticket: {}, user: {}", ticketId, userId);
-        Attachment attachment = attachmentService.uploadAttachment(ticketId, userId, file);
+        AttachmentResponse attachment = attachmentService.uploadAttachmentResponse(ticketId, userId, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(attachment);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Attachment> update(@PathVariable Long id, @RequestBody Attachment attachment) {
+    public ResponseEntity<AttachmentResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody AttachmentUpdateRequest request) {
         log.info("PUT update attachment with id: {}", id);
-        return ResponseEntity.ok(attachmentService.update(id, attachment));
+        return ResponseEntity.ok(attachmentService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

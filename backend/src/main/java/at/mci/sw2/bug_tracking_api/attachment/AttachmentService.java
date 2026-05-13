@@ -2,6 +2,8 @@ package at.mci.sw2.bug_tracking_api.attachment;
 
 import at.mci.sw2.bug_tracking_api.common.AbstractCrudService;
 import at.mci.sw2.bug_tracking_api.common.ResourceNotFoundException;
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentResponse;
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentUpdateRequest;
 import at.mci.sw2.bug_tracking_api.ticket.Ticket;
 import at.mci.sw2.bug_tracking_api.ticket.TicketRepository;
 import at.mci.sw2.bug_tracking_api.user.User;
@@ -39,18 +41,66 @@ public class AttachmentService extends AbstractCrudService<Attachment, Long> {
         User user = getUser(userId);
 
         Attachment attachment = new Attachment();
-        attachment.setFilename(resolveFilename(file));
+        String filename = resolveFilename(file);
+        attachment.setFilename(filename);
         attachment.setFileType(file.getContentType());
         attachment.setFileSize(file.getSize());
+        attachment.setFilePath("uploads/" + filename);
         attachment.setTicket(ticket);
         attachment.setUploadedBy(user);
 
         return attachmentRepository.save(attachment);
     }
 
+    public AttachmentResponse uploadAttachmentResponse(Long ticketId, Long userId, MultipartFile file) {
+        return toResponse(uploadAttachment(ticketId, userId, file));
+    }
+
+    public List<AttachmentResponse> getAllAttachments() {
+        return attachmentRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public AttachmentResponse getAttachmentById(Long id) {
+        return toResponse(getById(id));
+    }
+
+    public List<AttachmentResponse> getAttachmentResponsesByTicket(Long ticketId) {
+        Ticket ticket = getTicket(ticketId);
+        return attachmentRepository.findByTicket(ticket).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     public List<Attachment> getAttachmentsByTicket(Long ticketId) {
         Ticket ticket = getTicket(ticketId);
         return attachmentRepository.findByTicket(ticket);
+    }
+
+    public AttachmentResponse update(Long id, AttachmentUpdateRequest request) {
+        Attachment existing = getById(id);
+
+        if (request.filename() != null) {
+            existing.setFilename(request.filename());
+        }
+        if (request.fileType() != null) {
+            existing.setFileType(request.fileType());
+        }
+        if (request.fileSize() != null) {
+            existing.setFileSize(request.fileSize());
+        }
+        if (request.filePath() != null) {
+            existing.setFilePath(request.filePath());
+        }
+        if (request.ticketId() != null) {
+            existing.setTicket(getTicket(request.ticketId()));
+        }
+        if (request.uploadedById() != null) {
+            existing.setUploadedBy(getUser(request.uploadedById()));
+        }
+
+        return toResponse(attachmentRepository.save(existing));
     }
 
     @Override
@@ -97,5 +147,21 @@ public class AttachmentService extends AbstractCrudService<Attachment, Long> {
         }
 
         return filename;
+    }
+
+    private AttachmentResponse toResponse(Attachment attachment) {
+        Ticket ticket = attachment.getTicket();
+        User uploadedBy = attachment.getUploadedBy();
+
+        return new AttachmentResponse(
+                attachment.getAttachmentId(),
+                attachment.getFilename(),
+                attachment.getFileType(),
+                attachment.getFileSize(),
+                attachment.getFilePath(),
+                attachment.getUploadedAt(),
+                ticket != null ? ticket.getTicketId() : null,
+                uploadedBy != null ? uploadedBy.getUserId() : null,
+                uploadedBy != null ? uploadedBy.getUsername() : null);
     }
 }
