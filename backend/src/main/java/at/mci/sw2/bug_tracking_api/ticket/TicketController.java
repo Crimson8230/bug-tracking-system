@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import at.mci.sw2.bug_tracking_api.attachment.Attachment;
 import at.mci.sw2.bug_tracking_api.attachment.AttachmentService;
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentResponse;
 import at.mci.sw2.bug_tracking_api.ticket.dto.TicketCreateRequest;
 import at.mci.sw2.bug_tracking_api.ticket.dto.TicketResponse;
 import at.mci.sw2.bug_tracking_api.ticket.dto.TicketUpdateRequest;
@@ -53,8 +53,8 @@ public class TicketController {
     }
 
     @GetMapping("/{ticketId}/attachments")
-    public ResponseEntity<List<Attachment>> getAttachmentsByTicket(@PathVariable Long ticketId) {
-        return ResponseEntity.ok(attachmentService.getAttachmentsByTicket(ticketId));
+    public ResponseEntity<List<AttachmentResponse>> getAttachmentsByTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok(attachmentService.getAttachmentResponsesByTicket(ticketId));
     }
 
 }
