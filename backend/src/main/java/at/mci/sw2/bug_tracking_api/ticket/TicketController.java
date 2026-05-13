@@ -2,6 +2,7 @@ package at.mci.sw2.bug_tracking_api.ticket;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,28 +21,29 @@ public class TicketController {
     }
 
     @PostMapping
-    public Ticket create(@RequestBody Ticket ticket) {
-        return service.create(ticket);
+    public ResponseEntity<Ticket> create(@RequestBody Ticket ticket) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(ticket));
     }
 
     @GetMapping
-    public List<Ticket> getAllTickets() {
-        return service.getAll();
+    public ResponseEntity<List<Ticket>> getAllTickets() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public Ticket getById(@PathVariable Long id) {
-        return service.getById(id);
+    public ResponseEntity<Ticket> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PutMapping("/{id}")
-    public Ticket update(@PathVariable Long id, @RequestBody Ticket updated) {
-        return service.update(id, updated);
+    public ResponseEntity<Ticket> update(@PathVariable Long id, @RequestBody Ticket updated) {
+        return ResponseEntity.ok(service.update(id, updated));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{ticketId}/attachments")
