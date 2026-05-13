@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import at.mci.sw2.bug_tracking_api.role.dto.RoleCreateRequest;
+import at.mci.sw2.bug_tracking_api.role.dto.RoleResponse;
+import at.mci.sw2.bug_tracking_api.role.dto.RoleUpdateRequest;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/roles")
 public class RoleController {
@@ -17,23 +22,23 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Role> create(@RequestBody Role role) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(role));
+    public ResponseEntity<RoleResponse> create(@Valid @RequestBody RoleCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Role>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<RoleResponse>> getAll() {
+        return ResponseEntity.ok(service.getAllRoles());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<RoleResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getRoleById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> update(@PathVariable Long id, @RequestBody Role updated) {
-        return ResponseEntity.ok(service.update(id, updated));
+    public ResponseEntity<RoleResponse> update(@PathVariable Long id, @Valid @RequestBody RoleUpdateRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")

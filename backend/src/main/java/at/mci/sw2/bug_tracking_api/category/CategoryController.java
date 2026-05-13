@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import at.mci.sw2.bug_tracking_api.category.dto.CategoryCreateRequest;
+import at.mci.sw2.bug_tracking_api.category.dto.CategoryResponse;
+import at.mci.sw2.bug_tracking_api.category.dto.CategoryUpdateRequest;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
@@ -17,23 +22,25 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> create(@RequestBody Category category) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(category));
+    public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<CategoryResponse>> getAll() {
+        return ResponseEntity.ok(service.getAllCategories());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<CategoryResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> update(@PathVariable Long id, @RequestBody Category updated) {
-        return ResponseEntity.ok(service.update(id, updated));
+    public ResponseEntity<CategoryResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryUpdateRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")

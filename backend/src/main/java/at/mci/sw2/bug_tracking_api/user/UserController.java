@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import at.mci.sw2.bug_tracking_api.user.dto.UserCreateRequest;
+import at.mci.sw2.bug_tracking_api.user.dto.UserResponse;
+import at.mci.sw2.bug_tracking_api.user.dto.UserUpdateRequest;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -17,24 +22,25 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(user));
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getUserById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id,
-            @RequestBody User updated) {
-        return ResponseEntity.ok(service.update(id, updated));
+    public ResponseEntity<UserResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")

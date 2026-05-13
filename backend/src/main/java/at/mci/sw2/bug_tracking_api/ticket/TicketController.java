@@ -6,8 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import at.mci.sw2.bug_tracking_api.attachment.Attachment;
 import at.mci.sw2.bug_tracking_api.attachment.AttachmentService;
+import at.mci.sw2.bug_tracking_api.attachment.dto.AttachmentResponse;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketCreateRequest;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketResponse;
+import at.mci.sw2.bug_tracking_api.ticket.dto.TicketUpdateRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
@@ -21,23 +25,25 @@ public class TicketController {
     }
 
     @PostMapping
-    public ResponseEntity<Ticket> create(@RequestBody Ticket ticket) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(ticket));
+    public ResponseEntity<TicketResponse> create(@Valid @RequestBody TicketCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<TicketResponse>> getAllTickets() {
+        return ResponseEntity.ok(service.getAllTickets());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<TicketResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getTicketById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ticket> update(@PathVariable Long id, @RequestBody Ticket updated) {
-        return ResponseEntity.ok(service.update(id, updated));
+    public ResponseEntity<TicketResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody TicketUpdateRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -47,8 +53,8 @@ public class TicketController {
     }
 
     @GetMapping("/{ticketId}/attachments")
-    public ResponseEntity<List<Attachment>> getAttachmentsByTicket(@PathVariable Long ticketId) {
-        return ResponseEntity.ok(attachmentService.getAttachmentsByTicket(ticketId));
+    public ResponseEntity<List<AttachmentResponse>> getAttachmentsByTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok(attachmentService.getAttachmentResponsesByTicket(ticketId));
     }
 
 }
