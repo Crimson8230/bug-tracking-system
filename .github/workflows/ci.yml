@@ -26,9 +26,9 @@ jobs:
         working-directory: backend
         run: chmod +x mvnw
 
-      - name: Build (skip tests for now)
+      - name: Build and test
         working-directory: backend
-        run: ./mvnw clean compile -DskipTests
+        run: ./mvnw clean verify
 
   notify-pr:
     if: github.event_name == 'pull_request'
