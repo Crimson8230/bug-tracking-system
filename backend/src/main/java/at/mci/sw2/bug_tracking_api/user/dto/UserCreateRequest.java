@@ -14,5 +14,8 @@ public record UserCreateRequest(
         @NotBlank(message = "Display name is required")
         String displayName,
 
+        @NotBlank(message = "Password is required")
+        String password,
+
         Long roleId) {
 }
