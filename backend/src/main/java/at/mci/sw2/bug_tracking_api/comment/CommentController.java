@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import at.mci.sw2.bug_tracking_api.comment.dto.CommentCreateRequest;
+import at.mci.sw2.bug_tracking_api.comment.dto.CommentResponse;
+import at.mci.sw2.bug_tracking_api.comment.dto.CommentUpdateRequest;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/comments")
 public class CommentController {
@@ -17,23 +22,25 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<Comment> create(@RequestBody Comment comment) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(comment));
+    public ResponseEntity<CommentResponse> create(@Valid @RequestBody CommentCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<CommentResponse>> getAll() {
+        return ResponseEntity.ok(service.getAllComments());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<CommentResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getCommentById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> update(@PathVariable Long id, @RequestBody Comment updated) {
-        return ResponseEntity.ok(service.update(id, updated));
+    public ResponseEntity<CommentResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CommentUpdateRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
