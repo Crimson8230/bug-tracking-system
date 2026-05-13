@@ -1,6 +1,7 @@
 package at.mci.sw2.bug_tracking_api.user;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import at.mci.sw2.bug_tracking_api.common.AbstractCrudService;
 import at.mci.sw2.bug_tracking_api.common.ResourceNotFoundException;
 import at.mci.sw2.bug_tracking_api.role.Role;
@@ -16,11 +17,13 @@ public class UserService extends AbstractCrudService<User, Long> {
 
     private final UserRepository repo;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repo, RoleRepository roleRepository) {
+    public UserService(UserRepository repo, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         super(repo);
         this.repo = repo;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponse create(UserCreateRequest request) {
@@ -28,6 +31,7 @@ public class UserService extends AbstractCrudService<User, Long> {
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setDisplayName(request.displayName());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRole(request.roleId() != null ? getRole(request.roleId()) : null);
 
         return toResponse(repo.save(user));

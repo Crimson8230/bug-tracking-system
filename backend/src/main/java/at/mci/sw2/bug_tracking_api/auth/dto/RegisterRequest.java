@@ -1,9 +1,9 @@
-package at.mci.sw2.bug_tracking_api.user.dto;
+package at.mci.sw2.bug_tracking_api.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record UserCreateRequest(
+public record RegisterRequest(
         @NotBlank(message = "Username is required")
         String username,
 
