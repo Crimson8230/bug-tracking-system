@@ -1,11 +1,15 @@
 package at.mci.sw2.bug_tracking_api.role;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "role")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Role {
 
     @Id

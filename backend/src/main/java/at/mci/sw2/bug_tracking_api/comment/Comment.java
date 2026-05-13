@@ -3,13 +3,17 @@ package at.mci.sw2.bug_tracking_api.comment;
 import at.mci.sw2.bug_tracking_api.ticket.Ticket;
 import at.mci.sw2.bug_tracking_api.user.User;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Comment {
 
     @Id

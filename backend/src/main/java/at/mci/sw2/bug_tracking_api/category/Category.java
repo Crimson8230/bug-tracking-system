@@ -1,11 +1,15 @@
 package at.mci.sw2.bug_tracking_api.category;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "category")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -13,6 +17,6 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name = "category_name", nullable = false)
+    @Column(name = "category_name", nullable = false, unique = true)
     private String categoryName;
 }
