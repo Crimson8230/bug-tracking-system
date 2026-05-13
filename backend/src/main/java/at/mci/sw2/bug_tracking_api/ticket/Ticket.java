@@ -1,14 +1,19 @@
 package at.mci.sw2.bug_tracking_api.ticket;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import at.mci.sw2.bug_tracking_api.user.User;
 import at.mci.sw2.bug_tracking_api.category.Category;
 
 @Entity
 @Table(name = "ticket")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +28,11 @@ public class Ticket {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TicketStatus.Status status;
+    private TicketStatus.Status status = TicketStatus.Status.OPEN;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TicketPriority.Priority priority;
+    private TicketPriority.Priority priority = TicketPriority.Priority.MEDIUM;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -50,6 +55,9 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "parent_ticket_id")
     private Ticket parentTicket;
+
+    @OneToMany(mappedBy = "parentTicket", cascade = CascadeType.ALL)
+    private List<Ticket> childTickets;
 
     @PrePersist
     void onCreate() {
