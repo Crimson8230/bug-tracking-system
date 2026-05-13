@@ -1,6 +1,7 @@
 package at.mci.sw2.bug_tracking_api.attachment;
 
 import at.mci.sw2.bug_tracking_api.common.AbstractCrudService;
+import at.mci.sw2.bug_tracking_api.common.ResourceNotFoundException;
 import at.mci.sw2.bug_tracking_api.ticket.Ticket;
 import at.mci.sw2.bug_tracking_api.ticket.TicketRepository;
 import at.mci.sw2.bug_tracking_api.user.User;
@@ -77,12 +78,12 @@ public class AttachmentService extends AbstractCrudService<Attachment, Long> {
 
     private Ticket getTicket(Long ticketId) {
         return ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket with id " + ticketId + " not found"));
     }
 
     private User getUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
     }
 
     private String resolveFilename(MultipartFile file) {

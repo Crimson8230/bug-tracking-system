@@ -1,8 +1,7 @@
 package at.mci.sw2.bug_tracking_api.comment;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import at.mci.sw2.bug_tracking_api.common.ResourceNotFoundException;
 import at.mci.sw2.bug_tracking_api.common.AbstractCrudService;
 import at.mci.sw2.bug_tracking_api.ticket.Ticket;
 import at.mci.sw2.bug_tracking_api.ticket.TicketRepository;
@@ -42,11 +41,11 @@ public class CommentService extends AbstractCrudService<Comment, Long> {
 
     private Ticket getTicket(Long ticketId) {
         return ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket with id " + ticketId + " not found"));
     }
 
     private User getUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
     }
 }
