@@ -1,0 +1,22 @@
+name: Notify PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
+
+jobs:
+  notify-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Discord PR
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "Pull Request wartet auf Review\nAutor: ${{ github.actor }}\nBranch: ${{ github.head_ref }}\n${{ github.event.pull_request.html_url }}"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
