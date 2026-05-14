@@ -1,0 +1,98 @@
+/* Ergänzungen zu pages.css für die Benutzerverwaltung */
+.user-table .user-row {
+  grid-template-columns: 90px 1.4fr 1.2fr 1.8fr 1.2fr 120px 170px;
+}
+
+.user-table .user-row:not(.ticket-head) {
+  cursor: default;
+}
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-h);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000;
+}
+
+.user-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.danger-button:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  color: rgb(239, 68, 68);
+}
+
+.user-alert,
+.user-empty-state {
+  padding: 18px 20px;
+  color: var(--text);
+}
+
+.user-alert {
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  color: rgb(239, 68, 68);
+}
+
+.user-modal {
+  width: min(760px, calc(100vw - 32px));
+  background: var(--bg);
+}
+
+.user-modal .info-title {
+  margin-bottom: 0;
+}
+
+.user-modal .info-title h2 {
+  margin: 0;
+}
+
+.user-checkbox-field {
+  justify-content: end;
+}
+
+.user-checkbox {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-h);
+}
+
+.user-checkbox input {
+  width: auto;
+}
+
+.user-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+
+
+@media (max-width: 1100px) {
+  .user-table .user-row {
+    min-width: 1180px;
+  }
+}
+
+

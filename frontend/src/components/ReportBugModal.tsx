@@ -1,10 +1,10 @@
 import { ArrowLeft, Bug, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { createTicket } from "../API/tickets";
+import { useEffect, useState } from "react";
+import { createTicket, type TicketCreateRequest, type TicketPriority } from "../API/tickets";
+import { getCategories, type BackendCategory } from "../API/categories";
+import { getCurrentUser } from "../auth/currentUser";
 import "../components/TicketModal.css";
-
-type Priority = "LOW" | "MEDIUM" | "HIGH";
 
 interface ReportBugFormProps {
     onClose?: () => void;
@@ -12,10 +12,11 @@ interface ReportBugFormProps {
     asModal?: boolean;
 }
 
-const priorities: { value: Priority; label: string }[] = [
+const priorities: { value: TicketPriority; label: string }[] = [
     { value: "LOW", label: "Niedrig" },
     { value: "MEDIUM", label: "Normal" },
     { value: "HIGH", label: "Hoch" },
+    { value: "CRITICAL", label: "Kritisch" },
 ];
 
 export function ReportBugForm({
@@ -25,24 +26,64 @@ export function ReportBugForm({
                               }: ReportBugFormProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [priority, setPriority] = useState<Priority>("MEDIUM");
+    const [priority, setPriority] = useState<TicketPriority>("MEDIUM");
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
+    const currentUser = getCurrentUser();
+
+    const [categories, setCategories] = useState<BackendCategory[]>([]);
+    const [categoryId, setCategoryId] = useState("");
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+
+    useEffect(() => {
+        getCategories()
+            .then(setCategories)
+            .catch((err) => {
+                console.error(err);
+                setError("Kategorien konnten nicht geladen werden.");
+            })
+            .finally(() => setIsLoadingCategories(false));
+    }, []);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
+        if (!categoryId) {
+            setError("Bitte wähle eine Kategorie aus.");
+            return;
+        }
+
+        if (!currentUser?.userId) {
+            setError("Du musst angemeldet sein, um ein Ticket zu erstellen.");
+            setIsSaving(false);
+            return;
+        }
 
         setError("");
         setIsSaving(true);
 
         try {
-            await createTicket({
-                title,
-                description,
-                status: "OPEN",
+
+            const payload: TicketCreateRequest = {
+                title: title.trim(),
+                description: description.trim(),
                 priority,
-                created_at: new Date().toISOString(),
-            });
+                reportedById: currentUser.userId,
+                assignedToId: null,
+                categoryId: Number(categoryId),
+                parentTicketId: null,
+            };
+            console.log("create ticket payload", payload);
+            console.log("current user", currentUser);
+            console.log("categories", categories);
+
+
+            await createTicket(payload);
+
+            setTitle("");
+            setDescription("");
+            setPriority("MEDIUM");
+            setCategoryId("");
 
             onCreated?.();
         } catch (err) {
@@ -98,6 +139,7 @@ export function ReportBugForm({
                             <span>Beschreibung</span>
                             <textarea
                                 rows={7}
+                                maxLength={1000}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 placeholder="Beschreibe den Fehler..."
@@ -105,11 +147,37 @@ export function ReportBugForm({
                         </label>
 
                         <label className="field">
+                            <span>Kategorie *</span>
+
+                            <select
+                                required
+                                value={categoryId}
+                                disabled={isLoadingCategories || categories.length === 0}
+                                onChange={(e) => setCategoryId(e.target.value)}
+                            >
+                                <option value="">
+                                    {isLoadingCategories
+                                        ? "Kategorien werden geladen..."
+                                        : "Kategorie auswählen"}
+                                </option>
+
+                                {categories.map((category) => (
+                                    <option
+                                        key={category.categoryId}
+                                        value={String(category.categoryId)}
+                                    >
+                                        {category.categoryName}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <label className="field">
                             <span>Priorität *</span>
                             <select
                                 value={priority}
                                 onChange={(e) =>
-                                    setPriority(e.target.value as Priority)
+                                    setPriority(e.target.value as TicketPriority)
                                 }
                             >
                                 {priorities.map((priority) => (
@@ -156,7 +224,7 @@ export function ReportBugForm({
                     <button
                         className="primary-button"
                         type="submit"
-                        disabled={isSaving}
+                        disabled={isSaving || isLoadingCategories || categories.length === 0}
                     >
                         <Send size={18} />
                         {isSaving ? "Speichere..." : "Ticket speichern"}

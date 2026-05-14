@@ -1,27 +1,29 @@
-import { LogOut, Bug, Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import {useEffect, useState} from "react";
-import {getTickets} from "../API/tickets";
+import {getTickets, type BackendTicket} from "../API/tickets";
 import TicketDetailModal from "../components/TicketDetailModal";
 import {ReportBugForm} from "../components/ReportBugModal";
+import AppSidebar from "../components/AppSidebar";
 
-type BackendTicket = {
-    ticket_id: number;
-    title: string;
-    description: string;
-    status: "OPEN" | "IN_ANALYSIS" | "IN_PROGRESS" | "DONE" | "CANCELLED";
-    priority: "LOW" | "MEDIUM" | "HIGH";
-    created_at: string;
-    updated_at?: string;
-};
 
 export default function BugOverviewPage() {
 
-    const navigate = useNavigate();
     const [tickets, setTickets] = useState<BackendTicket[]>([]);
     const [showReportBugModal, setShowReportBugModal] = useState(false);
     const [selectedTicket, setSelectedTicket] =
         useState<BackendTicket | null>(null);
+
+    type SortKey =
+        | "ticketId"
+        | "title"
+        | "status"
+        | "priority"
+        | "reportedByUsername"
+        | "assignedToUsername"
+        | "createdAt";
+
+    const [sortKey, setSortKey] = useState<SortKey>("ticketId");
+    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
 
     useEffect(() => {
@@ -42,34 +44,37 @@ export default function BugOverviewPage() {
         (ticket) => ticket.status === "IN_PROGRESS"
     ).length;
 
+    const handleSort = (key: SortKey) => {
+        if (sortKey === key) {
+            setSortDirection((current) => current === "asc" ? "desc" : "asc");
+        } else {
+            setSortKey(key);
+            setSortDirection("asc");
+        }
+    };
+
+    const sortedTickets = [...tickets].sort((a, b) => {
+        const aValue = a[sortKey] ?? "";
+        const bValue = b[sortKey] ?? "";
+
+        if (sortKey === "createdAt") {
+            return sortDirection === "asc"
+                ? new Date(aValue).getTime() - new Date(bValue).getTime()
+                : new Date(bValue).getTime() - new Date(aValue).getTime();
+        }
+
+        if (typeof aValue === "number" && typeof bValue === "number") {
+            return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+        }
+
+        return sortDirection === "asc"
+            ? String(aValue).localeCompare(String(bValue))
+            : String(bValue).localeCompare(String(aValue));
+    });
+
     return (
         <main className="overview-page">
-            <aside className="sidebar">
-                <div className="brand">
-                    <div className="brand-icon">
-                        <Bug size={24} />
-                    </div>
-                    <div>
-                        <strong>BugTracker</strong>
-                        <span>Group 5</span>
-                    </div>
-                </div>
-
-                <nav className="nav-list">
-                    <a className="active" href="#">Übersicht</a>
-                    <a href="#">Zugewiesene Tickets</a>
-                    <a href="#">Statistik</a>
-                    <a href="#">Benutzerverwaltung</a>
-                    <a href='#'>Adminbereich</a>
-                </nav>
-                <button
-                    className="logout-button"
-                    onClick={() => navigate("/login")}
-                >
-                    <LogOut size={18} />
-                    Logout
-                </button>
-            </aside>
+            <AppSidebar activeItem="overview" />
 
             <section className="overview-content">
                 <header className="overview-header">
@@ -124,24 +129,26 @@ export default function BugOverviewPage() {
 
                     <div className="ticket-table">
                         <div className="ticket-row ticket-head">
-                            <span>ID</span>
-                            <span>Titel</span>
-                            <span>Status</span>
-                            <span>Priorität</span>
-                            <span>Bearbeiter</span>
-                            <span>Erstellt</span>
+                            <button onClick={() => handleSort("ticketId")}>ID</button>
+                            <button onClick={() => handleSort("title")}>Titel</button>
+                            <button onClick={() => handleSort("status")}>Status</button>
+                            <button onClick={() => handleSort("priority")}>Priorität</button>
+                            <button onClick={() => handleSort("reportedByUsername")}>gemeldet von</button>
+                            <button onClick={() => handleSort("assignedToUsername")}>Bearbeiter</button>
+                            <button onClick={() => handleSort("createdAt")}>Meldedatum</button>
                         </div>
 
-                        {tickets.map((ticket) => (
-                            <div className="ticket-row" key={ticket.ticket_id}
-                                onClick={() => setSelectedTicket(ticket)}>
-                                <span className="ticket-id">#{ticket.ticket_id}</span>
+                        {sortedTickets.map((ticket) => (
+                            <div className="ticket-row" key={ticket.ticketId}
+                                 onClick={() => setSelectedTicket(ticket)}>
+                                <span className="ticket-id">#{ticket.ticketId}</span>
                                 <span className="ticket-title">{ticket.title}</span>
                                 <span>{ticket.status}</span>
                                 <span>{ticket.priority}</span>
-                                <span>Nicht zugewiesen</span>
+                                <span>{ticket.reportedByUsername}</span>
+                                <span>{ticket.assignedToUsername ?? "Nicht zugewiesen"}</span>
                                 <span>
-                                    {new Date(ticket.created_at).toLocaleDateString("de-DE")}
+                                    {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString("de-DE") : "-"}
                                 </span>
                             </div>
                         ))}
@@ -151,6 +158,17 @@ export default function BugOverviewPage() {
             <TicketDetailModal
                 ticket={selectedTicket}
                 onClose={() => setSelectedTicket(null)}
+                onTicketUpdated={(updatedTicket) => {
+                    setTickets((currentTickets) =>
+                        currentTickets.map((ticket) =>
+                            ticket.ticketId === updatedTicket.ticketId
+                                ? updatedTicket
+                                : ticket
+                        )
+                    );
+
+                    setSelectedTicket(updatedTicket);
+                }}
             />
             {showReportBugModal && (
                 <div
@@ -161,9 +179,10 @@ export default function BugOverviewPage() {
                         <ReportBugForm
                             asModal
                             onClose={() => setShowReportBugModal(false)}
-                            onCreated={() => {
+                            onCreated={async () => {
                                 setShowReportBugModal(false);
-                                getTickets();
+                                const updatedTickets = await getTickets();
+                                setTickets(updatedTickets);
                             }}
                         />
                     </div>
