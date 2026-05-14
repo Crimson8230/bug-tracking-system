@@ -27,6 +27,9 @@ public class User {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
+    @Column(name = "password_hash")
+    private String passwordHash;
+
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
