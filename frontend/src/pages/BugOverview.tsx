@@ -10,6 +10,7 @@ import {
     statusClasses,
     priorityClasses,
 } from "../utils/ticketDisplay";
+import { getAuthSession } from "../auth/auth";
 
 export default function BugOverviewPage() {
 
@@ -19,6 +20,9 @@ export default function BugOverviewPage() {
         useState<BackendTicket | null>(null);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [showClosedTickets, setShowClosedTickets] = useState(false);
+    const [showOnlyMyTickets, setShowOnlyMyTickets] = useState(false);
+    const currentUser = getAuthSession()?.user;
 
     type SortKey =
         | "ticketId"
@@ -63,13 +67,23 @@ export default function BugOverviewPage() {
     const filteredTickets = tickets.filter((ticket) => {
         const search = searchTerm.toLowerCase().trim();
 
-        if (!search) {
-            return true;
-        }
+        const matchesSearch =
+            !search ||
+            ticket.title.toLowerCase().includes(search) ||
+            (ticket.description ?? "").toLowerCase().includes(search);
+
+        const matchesClosedFilter =
+            showClosedTickets ||
+            (ticket.status !== "DONE" && ticket.status !== "CANCELLED");
+
+        const matchesAssignedFilter =
+            !showOnlyMyTickets ||
+            ticket.assignedToId === currentUser?.userId;
 
         return (
-            ticket.title.toLowerCase().includes(search) ||
-            (ticket.description ?? "").toLowerCase().includes(search)
+            matchesSearch &&
+            matchesClosedFilter &&
+            matchesAssignedFilter
         );
     });
 
@@ -142,13 +156,24 @@ export default function BugOverviewPage() {
                             />
                         </div>
 
-                        <button className="secondary-button">
+                        <button
+                            className={`secondary-button ${showClosedTickets ? "active" : ""}`}
+                            type="button"
+                            onClick={() => setShowClosedTickets((current) => !current)}
+                        >
                             <Filter size={17} />
-                            Filter
+                            {showClosedTickets
+                                ? "Offene Tickets anzeigen"
+                                : "Geschlossene Tickets anzeigen"}
                         </button>
 
-                        <button className="secondary-button icon-only" aria-label="Sortierung">
+                        <button
+                            className={`secondary-button ${showOnlyMyTickets ? "active" : ""}`}
+                            type="button"
+                            onClick={() => setShowOnlyMyTickets((current) => !current)}
+                        >
                             <SlidersHorizontal size={17} />
+                            Meine Tickets
                         </button>
                     </div>
 

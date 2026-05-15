@@ -17,10 +17,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { key: "overview", label: "Übersicht", path: "/overview" },
-  { key: "assigned", label: "Zugewiesene Tickets", path: "/overview" },
-  { key: "statistics", label: "Statistik", path: "/overview" },
   { key: "users", label: "Benutzerverwaltung", path: "/users" },
-  { key: "admin", label: "Adminbereich", path: "/overview" },
 ];
 
 type AppSidebarProps = {
