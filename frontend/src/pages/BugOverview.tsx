@@ -13,6 +13,8 @@ export default function BugOverviewPage() {
     const [selectedTicket, setSelectedTicket] =
         useState<BackendTicket | null>(null);
 
+    const [searchTerm, setSearchTerm] = useState("");
+
     type SortKey =
         | "ticketId"
         | "title"
@@ -53,7 +55,20 @@ export default function BugOverviewPage() {
         }
     };
 
-    const sortedTickets = [...tickets].sort((a, b) => {
+    const filteredTickets = tickets.filter((ticket) => {
+        const search = searchTerm.toLowerCase().trim();
+
+        if (!search) {
+            return true;
+        }
+
+        return (
+            ticket.title.toLowerCase().includes(search) ||
+            (ticket.description ?? "").toLowerCase().includes(search)
+        );
+    });
+
+    const sortedTickets = [...filteredTickets].sort((a, b) => {
         const aValue = a[sortKey] ?? "";
         const bValue = b[sortKey] ?? "";
 
@@ -114,7 +129,12 @@ export default function BugOverviewPage() {
                     <div className="ticket-toolbar">
                         <div className="search-box">
                             <Search size={18} />
-                            <input type="text" placeholder="Tickets suchen..." />
+                            <input
+                                type="text"
+                                placeholder="Tickets suchen..."
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                            />
                         </div>
 
                         <button className="secondary-button">

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { updateTicket, type BackendTicket } from "../API/tickets";
 import { getUsers, type BackendUser } from "../API/users";
+import { createComment, getCommentsByTicket, type BackendComment } from "../API/comments";
 import "./TicketModal.css";
+import { getAuthSession } from "../auth/auth";
 
 interface TicketModalProps {
     ticket: BackendTicket | null;
@@ -41,7 +43,7 @@ const priorityClass: Record<BackendTicket["priority"], string> = {
     CRITICAL: "priority-critical",
 };
 
-function formatDate(date?: string) {
+function formatDate(date?: string | null) {
     return date ? new Date(date).toLocaleString("de-DE") : "-";
 }
 
@@ -56,6 +58,10 @@ export default function TicketDetailModal({
     const [isLoadingUsers, setIsLoadingUsers] = useState(false);
     const [isSavingAssignee, setIsSavingAssignee] = useState(false);
     const [isClosingTicket, setIsClosingTicket] = useState(false);
+    const [comments, setComments] = useState<BackendComment[]>([]);
+    const [newComment, setNewComment] = useState("");
+    const [isLoadingComments, setIsLoadingComments] = useState(false);
+    const [isSavingComment, setIsSavingComment] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
@@ -85,6 +91,36 @@ export default function TicketDetailModal({
             .finally(() => {
                 if (isMounted) {
                     setIsLoadingUsers(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [ticket]);
+
+    useEffect(() => {
+        if (!ticket) return;
+
+        let isMounted = true;
+        setIsLoadingComments(true);
+        setComments([]);
+
+        getCommentsByTicket(ticket.ticketId)
+            .then((loadedComments) => {
+                if (isMounted) {
+                    setComments(loadedComments);
+                }
+            })
+            .catch((error: unknown) => {
+                if (isMounted) {
+                    const message = error instanceof Error ? error.message : "Kommentare konnten nicht geladen werden.";
+                    setErrorMessage(message);
+                }
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setIsLoadingComments(false);
                 }
             });
 
@@ -129,6 +165,38 @@ export default function TicketDetailModal({
             setErrorMessage(message);
         } finally {
             setIsClosingTicket(false);
+        }
+    };
+
+
+    const handleCreateComment = async () => {
+        const authSession = getAuthSession();
+        console.log("authSession", authSession);
+
+        const authorId = authSession?.user?.userId;
+
+        if (!authorId) {
+            setErrorMessage("Kein angemeldeter Benutzer gefunden.");
+            return;
+        }
+
+        setErrorMessage(null);
+        setIsSavingComment(true);
+
+        try {
+            const createdComment = await createComment({
+                content: newComment.trim(),
+                ticketId: localTicket.ticketId,
+                userId: authorId,
+            });
+
+            setComments((currentComments) => [...currentComments, createdComment]);
+            setNewComment("");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Kommentar konnte nicht gespeichert werden.";
+            setErrorMessage(message);
+        } finally {
+            setIsSavingComment(false);
         }
     };
 
@@ -209,6 +277,53 @@ export default function TicketDetailModal({
                     >
                         {isClosingTicket ? "Schließt ..." : isClosed ? "Ticket geschlossen" : "Ticket schließen"}
                     </button>
+                </section>
+
+
+                <section className="modal-section">
+                    <h3>Kommentare</h3>
+
+                    {isLoadingComments ? (
+                        <p>Kommentare werden geladen ...</p>
+                    ) : comments.length === 0 ? (
+                        <p>Noch keine Kommentare vorhanden.</p>
+                    ) : (
+                        <div className="comment-list">
+                            {comments.map((comment) => (
+                                <article className="comment-card" key={comment.commentId}>
+                                    <div className="comment-header">
+                                        <strong>
+                                            {comment.displayName
+                                                ?? comment.username
+                                                ?? `User #${comment.userId ?? "unbekannt"}`}
+                                        </strong>
+                                        <span>{formatDate(comment.createdAt)}</span>
+                                    </div>
+                                    <p>{comment.content}</p>
+                                </article>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="comment-form">
+                        <label htmlFor="newComment">Neuen Kommentar schreiben</label>
+                        <textarea
+                            id="newComment"
+                            rows={4}
+                            value={newComment}
+                            onChange={(event) => setNewComment(event.target.value)}
+                            placeholder="Kommentar eingeben ..."
+                            disabled={isSavingComment}
+                        />
+                        <button
+                            className="secondary-button"
+                            type="button"
+                            onClick={handleCreateComment}
+                            disabled={isSavingComment || newComment.trim().length === 0}
+                        >
+                            {isSavingComment ? "Speichert ..." : "Kommentar speichern"}
+                        </button>
+                    </div>
                 </section>
 
                 <section className="modal-meta">

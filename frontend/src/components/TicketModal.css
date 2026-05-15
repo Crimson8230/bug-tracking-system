@@ -137,3 +137,45 @@
 
     margin-top: 22px;
 }
+
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.comment-card {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: var(--shadow);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.comment-header span {
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.comment-form {
+    display: flex;
+    font-size: 15px;
+    font-family: inherit;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.comment-form textarea {
+    resize: vertical;
+    min-height: 6rem;
+    font-size: 15px;
+    font-family: inherit;
+}
