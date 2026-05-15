@@ -2,6 +2,7 @@ import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import {useEffect, useState} from "react";
 import {getTickets, type BackendTicket} from "../API/tickets";
 import TicketDetailModal from "../components/TicketDetailModal";
+import CreateCategoryModal from "../components/CreateCategoryModal";
 import {ReportBugForm} from "../components/ReportBugModal";
 import AppSidebar from "../components/AppSidebar";
 import {
@@ -16,6 +17,7 @@ export default function BugOverviewPage() {
 
     const [tickets, setTickets] = useState<BackendTicket[]>([]);
     const [showReportBugModal, setShowReportBugModal] = useState(false);
+    const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
     const [selectedTicket, setSelectedTicket] =
         useState<BackendTicket | null>(null);
 
@@ -117,14 +119,25 @@ export default function BugOverviewPage() {
                         <h1>Bug Übersicht</h1>
                     </div>
 
-                    <button
-                        className="primary-button"
-                        type="button"
-                        onClick={() => setShowReportBugModal(true)}
-                    >
-                        <Plus size={18} />
-                        Report Bug
-                    </button>
+                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                        <button
+                            className="secondary-button"
+                            type="button"
+                            onClick={() => setShowCreateCategoryModal(true)}
+                        >
+                            <Plus size={18} />
+                            Neue Kategorie
+                        </button>
+
+                        <button
+                            className="primary-button"
+                            type="button"
+                            onClick={() => setShowReportBugModal(true)}
+                        >
+                            <Plus size={18} />
+                            Report Bug
+                        </button>
+                    </div>
                 </header>
 
                 <section className="stats-grid">
@@ -173,7 +186,7 @@ export default function BugOverviewPage() {
                             onClick={() => setShowOnlyMyTickets((current) => !current)}
                         >
                             <SlidersHorizontal size={17} />
-                            Meine Tickets
+                            {showOnlyMyTickets ? "Alle Tickets zeigen" : "Meine Tickets zeigen"}
                         </button>
                     </div>
 
@@ -237,6 +250,22 @@ export default function BugOverviewPage() {
                                 setShowReportBugModal(false);
                                 const updatedTickets = await getTickets();
                                 setTickets(updatedTickets);
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+            {showCreateCategoryModal && (
+                <div
+                    className="modal-backdrop"
+                    onClick={() => setShowCreateCategoryModal(false)}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <CreateCategoryModal
+                            asModal
+                            onClose={() => setShowCreateCategoryModal(false)}
+                            onCreated={() => {
+                                setShowCreateCategoryModal(false);
                             }}
                         />
                     </div>

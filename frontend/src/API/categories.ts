@@ -31,3 +31,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export function getCategories() {
     return request<BackendCategory[]>("/api/v1/categories");
 }
+
+export type CategoryCreateRequest = {
+    categoryName: string;
+};
+
+export function createCategory(payload: CategoryCreateRequest) {
+    return request<BackendCategory>("/api/v1/categories", {
+        method: "POST",
+        body: JSON.stringify(payload),
+    });
+}
