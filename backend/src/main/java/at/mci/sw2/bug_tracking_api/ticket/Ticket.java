@@ -59,6 +59,7 @@ public class Ticket {
     @OneToMany(mappedBy = "parentTicket", cascade = CascadeType.ALL)
     private List<Ticket> childTickets;
 
+    // Lifecycle callbacks to set timestamps
     @PrePersist
     void onCreate() {
         LocalDateTime now = LocalDateTime.now();
