@@ -4,7 +4,12 @@ import {getTickets, type BackendTicket} from "../API/tickets";
 import TicketDetailModal from "../components/TicketDetailModal";
 import {ReportBugForm} from "../components/ReportBugModal";
 import AppSidebar from "../components/AppSidebar";
-
+import {
+    statusLabels,
+    priorityLabels,
+    statusClasses,
+    priorityClasses,
+} from "../utils/ticketDisplay";
 
 export default function BugOverviewPage() {
 
@@ -163,8 +168,12 @@ export default function BugOverviewPage() {
                                  onClick={() => setSelectedTicket(ticket)}>
                                 <span className="ticket-id">#{ticket.ticketId}</span>
                                 <span className="ticket-title">{ticket.title}</span>
-                                <span>{ticket.status}</span>
-                                <span>{ticket.priority}</span>
+                                <span className={`status ${statusClasses[ticket.status]}`}>
+                                    {statusLabels[ticket.status]}
+                                </span>
+                                <span className={`priority ${priorityClasses[ticket.priority]}`}>
+                                    {priorityLabels[ticket.priority]}
+                                </span>
                                 <span>{ticket.reportedByUsername}</span>
                                 <span>{ticket.assignedToUsername ?? "Nicht zugewiesen"}</span>
                                 <span>

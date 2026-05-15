@@ -10,6 +10,7 @@ import { CreateRoleForm } from "../components/CreateRoleModal";
 import { RegisterUserModal } from "../components/RegisterUserModal";
 import { BackendRole, getRoles } from "../API/roles";
 import AppSidebar from "../components/AppSidebar";
+import "./user-management.css";
 
 
 export default function UserManagementPage() {
@@ -124,8 +125,8 @@ export default function UserManagementPage() {
 
         {error && <div className="user-alert">{error}</div>}
 
-        <section className="ticket-panel">
-          <div className="ticket-toolbar">
+        <section className="user-panel">
+          <div className="user-toolbar">
             <div className="search-box">
               <Search size={18} />
               <input
@@ -141,8 +142,8 @@ export default function UserManagementPage() {
             </button>
           </div>
 
-          <div className="ticket-table user-table">
-            <div className="ticket-row user-row ticket-head">
+            <div className="user-table">
+                <div className="user-row user-head">
               <span>ID</span>
               <span>Name</span>
               <span>Benutzername</span>
@@ -159,18 +160,18 @@ export default function UserManagementPage() {
             )}
 
             {!isLoading && filteredUsers.map((user) => (
-              <div className="ticket-row user-row" key={user.userId}>
-                <span className="ticket-id">#{user.userId}</span>
-                <span className="ticket-title">{user.displayName}</span>
+              <div className="user-row" key={user.userId}>
+                <span className="user-id">#{user.userId}</span>
+                <span className="user-name">{user.displayName}</span>
                 <span>{user.username}</span>
                 <span>{user.email}</span>
                 <span className="role-pill">
                   <Shield size={14} />
                   {user.roleName ?? "Keine Rolle"}
                 </span>
-                <span className={user.active ? "status status-erledigt" : "status status-abgelehnt"}>
-                  {user.active ? "Aktiv" : "Inaktiv"}
-                </span>
+                  <span className={user.active ? "user-status user-status-active" : "user-status user-status-inactive"}>
+                      {user.active ? "Aktiv" : "Inaktiv"}
+                  </span>
                 <span className="user-actions">
                   <button className="secondary-button icon-only danger-button" type="button" onClick={() => handleDelete(user)} aria-label="Benutzer löschen">
                     <Trash2 size={16} />
