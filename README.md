@@ -58,10 +58,18 @@ cd bug-tracking-system
    `cd backend`
 
    **Windows (PowerShell):**
-   `.\mvnw.cmd spring-boot:run`
+   `.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"`
 
    **Linux / Mac / Git Bash:**
-   `./mvnw spring-boot:run`
+   `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev`
+
+   The `dev` profile seeds local-only bootstrap data if it does not exist yet:
+   - **Admin login:** `admin` / `admin123`
+   - **Roles:** `ADMIN`, `USER`
+   - **Category:** `General`
+
+   You can override the seeded admin with properties such as
+   `app.dev.admin.username`, `app.dev.admin.email`, and `app.dev.admin.password`.
 
 4. **Start Frontend:** `cd frontend` `npm install` `npm run dev`
 
