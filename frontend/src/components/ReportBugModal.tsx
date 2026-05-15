@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { createTicket, type TicketCreateRequest, type TicketPriority } from "../API/tickets";
 import { getCategories, type BackendCategory } from "../API/categories";
-import { getCurrentUser } from "../auth/currentUser";
+import { getAuthSession } from "../auth/auth";
 import "../components/TicketModal.css";
 
 interface ReportBugFormProps {
@@ -29,7 +29,8 @@ export function ReportBugForm({
     const [priority, setPriority] = useState<TicketPriority>("MEDIUM");
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
-    const currentUser = getCurrentUser();
+    const authSession = getAuthSession();
+    const currentUser = authSession?.user;
 
     const [categories, setCategories] = useState<BackendCategory[]>([]);
     const [categoryId, setCategoryId] = useState("");
@@ -73,10 +74,6 @@ export function ReportBugForm({
                 categoryId: Number(categoryId),
                 parentTicketId: null,
             };
-            console.log("create ticket payload", payload);
-            console.log("current user", currentUser);
-            console.log("categories", categories);
-
 
             await createTicket(payload);
 

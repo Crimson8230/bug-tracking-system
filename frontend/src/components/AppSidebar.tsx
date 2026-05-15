@@ -32,7 +32,7 @@ export default function AppSidebar({ activeItem }: AppSidebarProps) {
     const currentUser = getAuthSession()?.user;
 
     const welcomeName =
-        currentUser?.displayName || currentUser?.username || "Benutzer";
+        currentUser?.username || "Benutzer";
 
     return (
         <aside className="sidebar">
