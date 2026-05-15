@@ -1,6 +1,6 @@
 import { Bug, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { clearCurrentUser } from "../auth/currentUser";
+import { clearAuthSession, getAuthSession } from "../auth/auth";
 
 type SidebarItemKey =
   | "overview"
@@ -28,47 +28,55 @@ type AppSidebarProps = {
 };
 
 export default function AppSidebar({ activeItem }: AppSidebarProps) {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const currentUser = getAuthSession()?.user;
 
-  return (
-    <aside className="sidebar">
-      <div className="brand">
-        <div className="brand-icon">
-          <Bug size={24} />
-        </div>
-        <div>
-          <strong>BugTracker</strong>
-          <span>Group 5</span>
-        </div>
-      </div>
+    const welcomeName =
+        currentUser?.displayName || currentUser?.username || "Benutzer";
 
-      <nav className="nav-list">
-        {navItems.map((item) => (
-          <a
-            key={item.key}
-            className={activeItem === item.key ? "active" : undefined}
-            href={item.path}
-            onClick={(event) => {
-              event.preventDefault();
-              navigate(item.path);
-            }}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
+    return (
+        <aside className="sidebar">
+            <div className="brand">
+                <div className="brand-icon">
+                    <Bug size={24} />
+                </div>
+                <div>
+                    <strong>BugTracker</strong>
+                    <span>Group 5</span>
+                </div>
+            </div>
 
-        <button
-            className="logout-button"
-            type="button"
-            onClick={() => {
-                clearCurrentUser();
-                navigate("/login");
-            }}
-        >
-        <LogOut size={18} />
-        Logout
-      </button>
-    </aside>
-  );
+            <div className="sidebar-welcome">
+                Willkommen {welcomeName}
+            </div>
+
+            <nav className="nav-list">
+                {navItems.map((item) => (
+                    <a
+                        key={item.key}
+                        className={activeItem === item.key ? "active" : undefined}
+                        href={item.path}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            navigate(item.path);
+                        }}
+                    >
+                        {item.label}
+                    </a>
+                ))}
+            </nav>
+
+            <button
+                className="logout-button"
+                type="button"
+                onClick={() => {
+                    clearAuthSession();
+                    navigate("/login");
+                }}
+            >
+                <LogOut size={18} />
+                Logout
+            </button>
+        </aside>
+    );
 }

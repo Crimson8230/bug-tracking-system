@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
-console.log(API_BASE_URL);
+import { getAuthorizationHeader } from "../auth/auth";
 
 export type BackendUser = {
     userId: number;
@@ -24,7 +24,9 @@ export type UserUpdateRequest = Partial<UserCreateRequest> & {
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${path}`, {
-        headers: { "Content-Type": "application/json", ...options?.headers },
+        headers: { "Content-Type": "application/json",
+            ...getAuthorizationHeader(),
+            ...options?.headers },
         ...options,
     });
 

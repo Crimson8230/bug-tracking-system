@@ -169,6 +169,14 @@
   gap: 40px;
 }
 
+.sidebar-welcome {
+    margin: 1rem 0 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    background: var(--social-bg);
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -460,6 +468,17 @@
   grid-template-columns: 1fr 320px;
   gap: 24px;
   align-items: start;
+}
+
+.roles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.roles-card {
+    align-items: flex-start;
 }
 
 .form-card {

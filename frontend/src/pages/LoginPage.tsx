@@ -1,14 +1,33 @@
 import { Bug } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUsers } from "../API/users";
-import { setCurrentUser } from "../auth/currentUser";
+import { getRoles, BackendRole } from "../API/roles";
+import { login, setAuthSession } from "../auth/auth";
+import { RegisterUserModal } from "../components/RegisterUserModal";
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState("");
+
+    const [usernameOrEmail, setUsernameOrEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+    const [roles, setRoles] = useState<BackendRole[]>([]);
+
+    useEffect(() => {
+        async function loadRoles() {
+            try {
+                const loadedRoles = await getRoles();
+                setRoles(loadedRoles);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        loadRoles();
+    }, []);
 
     async function handleLogin(event: React.FormEvent) {
         event.preventDefault();
@@ -17,28 +36,21 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const users = await getUsers();
-            const enteredUsername = username.trim().toLowerCase();
+            const authResponse = await login({
+                usernameOrEmail: usernameOrEmail.trim(),
+                password,
+            });
 
-            const user = users.find(
-                (u) => u.username.toLowerCase() === enteredUsername
-            );
-
-            if (!user) {
-                setError("Benutzername wurde nicht gefunden.");
-                return;
-            }
-
-            if (!user.active) {
+            if (!authResponse.user.active) {
                 setError("Dieser Benutzer ist inaktiv.");
                 return;
             }
 
-            setCurrentUser(user);
+            setAuthSession(authResponse);
             navigate("/overview");
         } catch (err) {
             console.error(err);
-            setError("Benutzer konnten nicht geladen werden.");
+            setError("Login fehlgeschlagen. Benutzername/E-Mail oder Passwort ist falsch.");
         } finally {
             setIsLoading(false);
         }
@@ -57,19 +69,48 @@ export default function LoginPage() {
                 <form className="login-form" onSubmit={handleLogin}>
                     <input
                         type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
+                        placeholder="Username oder E-Mail"
+                        value={usernameOrEmail}
+                        onChange={(event) => setUsernameOrEmail(event.target.value)}
+                        required
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Passwort"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                         required
                     />
 
                     {error && <p className="error-message">{error}</p>}
 
                     <button type="submit" disabled={isLoading}>
-                        {isLoading ? "Prüfe..." : "Sign-In"}
+                        {isLoading ? "Melde an..." : "Sign-In"}
+                    </button>
+
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => setIsRegisterOpen(true)}
+                    >
+                        Benutzer registrieren
                     </button>
                 </form>
             </section>
+
+            {isRegisterOpen && (
+                <div className="modal-backdrop" onClick={() => setIsRegisterOpen(false)}>
+                    <div onClick={(event) => event.stopPropagation()}>
+                        <RegisterUserModal
+                            asModal
+                            roles={roles}
+                            onClose={() => setIsRegisterOpen(false)}
+                            onSaved={() => setIsRegisterOpen(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

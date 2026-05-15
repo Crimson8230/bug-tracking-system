@@ -1,4 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+import { getAuthorizationHeader } from "../auth/auth";
 
 export type TicketStatus =
     | "OPEN"
@@ -64,7 +65,9 @@ export type AttachmentResponse = {
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${path}`, {
-        headers: { "Content-Type": "application/json", ...options?.headers },
+        headers: { "Content-Type": "application/json",
+            ...getAuthorizationHeader(),
+            ...options?.headers },
         ...options,
     });
 

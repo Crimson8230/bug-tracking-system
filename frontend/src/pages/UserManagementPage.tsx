@@ -7,7 +7,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { BackendUser, deleteUser, getUsers } from "../API/users";
 import { CreateRoleForm } from "../components/CreateRoleModal";
-import { CreateUserModal } from "../components/CreateUserModal";
+import { RegisterUserModal } from "../components/RegisterUserModal";
 import { BackendRole, getRoles } from "../API/roles";
 import AppSidebar from "../components/AppSidebar";
 
@@ -57,7 +57,6 @@ export default function UserManagementPage() {
 
   const activeUsersCount = users.filter((user) => user.active).length;
   const inactiveUsersCount = users.length - activeUsersCount;
-  const assignedUsersCount = users.filter((user) => user.roleId !== null).length;
 
   function openCreateForm() {
     setSelectedUser(null);
@@ -104,14 +103,23 @@ export default function UserManagementPage() {
             <span>Benutzer gesamt</span>
             <strong>{users.length}</strong>
           </article>
-          <article className="stat-card">
-            <span>Aktiv</span>
-            <strong>{activeUsersCount}</strong>
-          </article>
-          <article className="stat-card">
-            <span>Mit Rolle</span>
-            <strong>{assignedUsersCount}</strong>
-          </article>
+            <article className="stat-card">
+                <span>Inaktiv</span>
+                <strong>{inactiveUsersCount}</strong>
+            </article>
+            <article className="stat-card roles-card">
+                <span>Verfügbare Rollen</span>
+                <div className="roles-list">
+                    {roles.length === 0 ? (
+                        <strong>Keine Rollen</strong>) : (
+                        roles.map((role) => (
+                            <span className="role-pill" key={role.roleId}>
+                                {role.roleName}
+                            </span>
+                        ))
+                    )}
+                </div>
+            </article>
         </section>
 
         {error && <div className="user-alert">{error}</div>}
@@ -175,14 +183,6 @@ export default function UserManagementPage() {
 
         <section className="stats-grid">
           <article className="stat-card">
-            <span>Inaktiv</span>
-            <strong>{inactiveUsersCount}</strong>
-          </article>
-          <article className="stat-card">
-            <span>Rollen</span>
-            <strong>{roles.length}</strong>
-          </article>
-          <article className="stat-card">
             <span>Suchtreffer</span>
             <strong>{filteredUsers.length}</strong>
           </article>
@@ -192,17 +192,14 @@ export default function UserManagementPage() {
       {isUserFormOpen && (
         <div className="modal-backdrop" onClick={() => setIsUserFormOpen(false)}>
           <div onClick={(event) => event.stopPropagation()}>
-            <CreateUserModal
+            <RegisterUserModal
               asModal
               roles={roles}
-              user={selectedUser}
               onClose={() => {
                 setIsUserFormOpen(false);
-                setSelectedUser(null);
               }}
               onSaved={async () => {
                 setIsUserFormOpen(false);
-                setSelectedUser(null);
                 await loadData();
               }}
             />

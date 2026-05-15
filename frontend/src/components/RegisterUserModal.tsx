@@ -1,19 +1,19 @@
 import { Send, UserCog } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { BackendRole } from "../API/roles";
-import { createUser, UserCreateRequest, BackendUser } from "../API/users";
+import { registerUser, RegisterRequest } from "../auth/auth";
 import "../components/TicketModal.css";
 
 type UserFormState = {
     username: string;
     email: string;
     displayName: string;
+    password: string;
     roleId: string;
 };
 
-interface CreateUserModalProps {
+interface RegisterUserModalProps {
     roles: BackendRole[];
-    user?: BackendUser | null;
     onClose?: () => void;
     onSaved?: () => void | Promise<void>;
     asModal?: boolean;
@@ -23,24 +23,26 @@ const emptyForm: UserFormState = {
     username: "",
     email: "",
     displayName: "",
+    password: "",
     roleId: "",
 };
 
-function toPayload(form: UserFormState): UserCreateRequest {
+function toPayload(form: UserFormState): RegisterRequest {
     return {
         username: form.username.trim(),
         email: form.email.trim(),
         displayName: form.displayName.trim(),
+        password: form.password,
         roleId: Number(form.roleId),
     };
 }
 
-export function CreateUserModal({
-                                    roles,
-                                    onClose,
-                                    onSaved,
-                                    asModal = false,
-                                }: CreateUserModalProps) {
+export function RegisterUserModal({
+                                      roles,
+                                      onClose,
+                                      onSaved,
+                                      asModal = false,
+                                  }: RegisterUserModalProps) {
     const [form, setForm] = useState<UserFormState>(emptyForm);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
@@ -48,19 +50,17 @@ export function CreateUserModal({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const trimmedForm = {
-            username: form.username.trim(),
-            email: form.email.trim(),
-            displayName: form.displayName.trim(),
-            roleId: form.roleId,
-        };
-
-        if (!trimmedForm.displayName || !trimmedForm.username || !trimmedForm.email) {
+        if (
+            !form.displayName.trim() ||
+            !form.username.trim() ||
+            !form.email.trim() ||
+            !form.password.trim()
+        ) {
             setError("Bitte alle Pflichtfelder ausfüllen.");
             return;
         }
 
-        if (!trimmedForm.roleId) {
+        if (!form.roleId) {
             setError("Bitte eine Rolle auswählen.");
             return;
         }
@@ -69,13 +69,12 @@ export function CreateUserModal({
         setIsSaving(true);
 
         try {
-            await createUser(toPayload(trimmedForm));
-
+            await registerUser(toPayload(form));
             setForm(emptyForm);
             await onSaved?.();
         } catch (err) {
             console.error(err);
-            setError("Benutzer konnte nicht gespeichert werden.");
+            setError("Benutzer konnte nicht registriert werden.");
         } finally {
             setIsSaving(false);
         }
@@ -87,8 +86,8 @@ export function CreateUserModal({
                 <div className="info-title">
                     <UserCog size={22} />
                     <div>
-                        <p className="eyebrow">Neuer Benutzer</p>
-                        <h2>Benutzer anlegen</h2>
+                        <p className="eyebrow">Registrierung</p>
+                        <h2>Benutzer registrieren</h2>
                     </div>
                 </div>
 
@@ -126,7 +125,7 @@ export function CreateUserModal({
                             />
                         </label>
 
-                        <label className="field field-full">
+                        <label className="field">
                             <span>E-Mail *</span>
                             <input
                                 required
@@ -134,6 +133,17 @@ export function CreateUserModal({
                                 value={form.email}
                                 onChange={(event) => setForm({ ...form, email: event.target.value })}
                                 placeholder="z. B. max.mustermann@example.com"
+                            />
+                        </label>
+
+                        <label className="field">
+                            <span>Passwort *</span>
+                            <input
+                                required
+                                type="password"
+                                value={form.password}
+                                onChange={(event) => setForm({ ...form, password: event.target.value })}
+                                placeholder="Passwort vergeben"
                             />
                         </label>
                     </div>
@@ -172,7 +182,7 @@ export function CreateUserModal({
 
                     <button className="primary-button" type="submit" disabled={isSaving}>
                         <Send size={18} />
-                        {isSaving ? "Speichere..." : "Benutzer anlegen"}
+                        {isSaving ? "Registriere..." : "Benutzer registrieren"}
                     </button>
                 </div>
             </form>
