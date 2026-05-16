@@ -42,7 +42,7 @@ export function getCategoryStyle(categoryName: string | null) {
     const hue = ((hash % 360) + 360) % 360;
 
     return {
-        backgroundColor: `hsl(${hue}, 50%, 60%)`,
+        backgroundColor: `hsl(${hue}, 40%, 45%)`,
         color: `hsl(${hue}, 100%, 10%)`,
         borderColor: `hsl(${hue}, 40%, 40%)`,
     };

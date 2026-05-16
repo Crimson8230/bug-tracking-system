@@ -1,4 +1,4 @@
-import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowDown, ArrowUp, Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import {useEffect, useState} from "react";
 import {getTickets, type BackendTicket} from "../API/tickets";
 import TicketDetailModal from "../components/TicketDetailModal";
@@ -66,6 +66,15 @@ export default function BugOverviewPage() {
             setSortKey(key);
             setSortDirection("asc");
         }
+    };
+    const renderSortIcon = (key: SortKey) => {
+        if (sortKey !== key) {
+            return null;
+        }
+
+        return sortDirection === "asc"
+            ? <ArrowUp size={14} />
+            : <ArrowDown size={14} />;
     };
 
     const filteredTickets = tickets.filter((ticket) => {
@@ -194,14 +203,37 @@ export default function BugOverviewPage() {
 
                     <div className="ticket-table">
                         <div className="ticket-row ticket-head">
-                            <button onClick={() => handleSort("ticketId")}>ID</button>
-                            <button onClick={() => handleSort("title")}>Titel</button>
-                            <button onClick={() => handleSort("status")}>Status</button>
-                            <button onClick={() => handleSort("priority")}>Priorität</button>
-                            <button onClick={() => handleSort("categoryName")}>Kategorie</button>
-                            <button onClick={() => handleSort("reportedByUsername")}>gemeldet von</button>
-                            <button onClick={() => handleSort("assignedToUsername")}>Bearbeiter</button>
-                            <button onClick={() => handleSort("createdAt")}>Meldedatum</button>
+                            <button onClick={() => handleSort("ticketId")}>
+                                ID {renderSortIcon("ticketId")}
+                            </button>
+
+                            <button onClick={() => handleSort("title")}>
+                                Titel {renderSortIcon("title")}
+                            </button>
+
+                            <button onClick={() => handleSort("status")}>
+                                Status {renderSortIcon("status")}
+                            </button>
+
+                            <button onClick={() => handleSort("priority")}>
+                                Priorität {renderSortIcon("priority")}
+                            </button>
+
+                            <button onClick={() => handleSort("categoryName")}>
+                                Kategorie {renderSortIcon("categoryName")}
+                            </button>
+
+                            <button onClick={() => handleSort("reportedByUsername")}>
+                                gemeldet von {renderSortIcon("reportedByUsername")}
+                            </button>
+
+                            <button onClick={() => handleSort("assignedToUsername")}>
+                                Bearbeiter {renderSortIcon("assignedToUsername")}
+                            </button>
+
+                            <button onClick={() => handleSort("createdAt")}>
+                                Meldedatum {renderSortIcon("createdAt")}
+                            </button>
                         </div>
 
                         {sortedTickets.map((ticket) => (
