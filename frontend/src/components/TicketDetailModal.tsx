@@ -9,6 +9,7 @@ import {
     priorityLabels,
     statusClasses,
     priorityClasses,
+    getCategoryStyle,
 } from "../utils/ticketDisplay";
 
 interface TicketModalProps {
@@ -196,10 +197,21 @@ export default function TicketDetailModal({
                         <p className="eyebrow">Ticket #{localTicket.ticketId}</p>
                         <h2>{localTicket.title}</h2>
                     </div>
+                    <div className="modal-header-actions">
+                        <div className="modal-header-meta">
+                            <span>Erstellt: <strong>{formatDate(localTicket.createdAt)}</strong></span>
+                            <span>
+                                Aktualisiert:{" "}
+                                <strong>
+                                    {localTicket.updatedAt ? formatDate(localTicket.updatedAt) : "Noch nicht aktualisiert"}
+                                </strong>
+                            </span>
+                        </div>
 
-                    <button className="secondary-button" type="button" onClick={onClose}>
-                        Schließen
-                    </button>
+                        <button className="secondary-button" type="button" onClick={onClose}>
+                            Schließen
+                        </button>
+                    </div>
                 </header>
 
                 <div className="modal-badges">
@@ -210,6 +222,9 @@ export default function TicketDetailModal({
                     <span className={`priority ${priorityClasses[localTicket.priority]}`}>
                         {priorityLabels[localTicket.priority]}
                     </span>
+                    <span className="category-badge" style={getCategoryStyle(localTicket.categoryName)}>
+                        {localTicket.categoryName ?? "Keine Kategorie"}
+                    </span>
                 </div>
 
                 {errorMessage && (
@@ -219,7 +234,15 @@ export default function TicketDetailModal({
                 )}
 
                 <section className="modal-section">
-                    <h3>Beschreibung</h3>
+                    <div className="section-header">
+                        <h3>Beschreibung</h3>
+
+                        <div className="reporter-info">
+                            <span>Gemeldet von:</span>
+                            <strong>{localTicket.reportedByUsername ?? "Unbekannt"}</strong>
+                        </div>
+                    </div>
+
                     <p>{localTicket.description}</p>
                 </section>
 
@@ -307,13 +330,12 @@ export default function TicketDetailModal({
                     )}
 
                     <div className="comment-form">
-                        <label htmlFor="newComment">Neuen Kommentar schreiben</label>
                         <textarea
                             id="newComment"
                             rows={4}
                             value={newComment}
                             onChange={(event) => setNewComment(event.target.value)}
-                            placeholder="Kommentar eingeben ..."
+                            placeholder="Kommentar schreiben ..."
                             disabled={isSavingComment}
                         />
                         <button
@@ -324,37 +346,6 @@ export default function TicketDetailModal({
                         >
                             {isSavingComment ? "Speichert ..." : "Kommentar speichern"}
                         </button>
-                    </div>
-                </section>
-
-                <section className="modal-meta">
-                    <div>
-                        <span>Erstellt</span>
-                        <strong>{formatDate(localTicket.createdAt)}</strong>
-                    </div>
-
-                    <div>
-                        <span>Aktualisiert</span>
-                        <strong>
-                            {localTicket.updatedAt
-                                ? formatDate(localTicket.updatedAt)
-                                : "Noch nicht aktualisiert"}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>Bearbeiter</span>
-                        <strong>{localTicket.assignedToUsername ?? "Nicht zugewiesen"}</strong>
-                    </div>
-
-                    <div>
-                        <span>Reporter</span>
-                        <strong>{localTicket.reportedByUsername ?? "Unbekannt"}</strong>
-                    </div>
-
-                    <div>
-                        <span>Kategorie</span>
-                        <strong>{localTicket.categoryName ?? "Keine Kategorie"}</strong>
                     </div>
                 </section>
             </article>

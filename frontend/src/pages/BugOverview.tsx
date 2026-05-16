@@ -10,6 +10,7 @@ import {
     priorityLabels,
     statusClasses,
     priorityClasses,
+    getCategoryStyle,
 } from "../utils/ticketDisplay";
 import { getAuthSession } from "../auth/auth";
 
@@ -31,6 +32,7 @@ export default function BugOverviewPage() {
         | "title"
         | "status"
         | "priority"
+        | "categoryName"
         | "reportedByUsername"
         | "assignedToUsername"
         | "createdAt";
@@ -74,9 +76,9 @@ export default function BugOverviewPage() {
             ticket.title.toLowerCase().includes(search) ||
             (ticket.description ?? "").toLowerCase().includes(search);
 
-        const matchesClosedFilter =
-            showClosedTickets ||
-            (ticket.status !== "DONE" && ticket.status !== "CANCELLED");
+        const matchesClosedFilter = showClosedTickets
+            ? (ticket.status === "DONE" || ticket.status === "CANCELLED")
+            : (ticket.status !== "DONE" && ticket.status !== "CANCELLED");
 
         const matchesAssignedFilter =
             !showOnlyMyTickets ||
@@ -196,6 +198,7 @@ export default function BugOverviewPage() {
                             <button onClick={() => handleSort("title")}>Titel</button>
                             <button onClick={() => handleSort("status")}>Status</button>
                             <button onClick={() => handleSort("priority")}>Priorität</button>
+                            <button onClick={() => handleSort("categoryName")}>Kategorie</button>
                             <button onClick={() => handleSort("reportedByUsername")}>gemeldet von</button>
                             <button onClick={() => handleSort("assignedToUsername")}>Bearbeiter</button>
                             <button onClick={() => handleSort("createdAt")}>Meldedatum</button>
@@ -211,6 +214,11 @@ export default function BugOverviewPage() {
                                 </span>
                                 <span className={`priority ${priorityClasses[ticket.priority]}`}>
                                     {priorityLabels[ticket.priority]}
+                                </span>
+                                <span
+                                    className="category-badge"
+                                    style={getCategoryStyle(ticket.categoryName)}>
+                                    {ticket.categoryName ?? "Keine Kategorie"}
                                 </span>
                                 <span>{ticket.reportedByUsername}</span>
                                 <span>{ticket.assignedToUsername ?? "Nicht zugewiesen"}</span>

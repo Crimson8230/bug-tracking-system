@@ -29,3 +29,21 @@ export const priorityClasses: Record<BackendTicket["priority"], string> = {
     HIGH: "priority-hoch",
     CRITICAL: "priority-kritisch",
 };
+
+export function getCategoryStyle(categoryName: string | null) {
+    const key = categoryName ?? "none";
+
+    let hash = 0;
+
+    for (const char of key) {
+        hash = char.charCodeAt(0) + ((hash << 10) - hash);
+    }
+
+    const hue = ((hash % 360) + 360) % 360;
+
+    return {
+        backgroundColor: `hsl(${hue}, 50%, 60%)`,
+        color: `hsl(${hue}, 100%, 10%)`,
+        borderColor: `hsl(${hue}, 40%, 40%)`,
+    };
+}

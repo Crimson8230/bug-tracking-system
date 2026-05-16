@@ -190,23 +190,6 @@ export function ReportBugForm({
                     </div>
                 </section>
 
-                <section className="modal-meta">
-                    <div>
-                        <span>Status</span>
-                        <strong>Neu</strong>
-                    </div>
-
-                    <div>
-                        <span>Erstellt</span>
-                        <strong>Beim Speichern</strong>
-                    </div>
-
-                    <div>
-                        <span>Bearbeiter</span>
-                        <strong>Nicht zugewiesen</strong>
-                    </div>
-                </section>
-
                 <div className="modal-actions">
                     {onClose && (
                         <button
