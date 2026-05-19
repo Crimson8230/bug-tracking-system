@@ -1,0 +1,179 @@
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-h);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000;
+}
+
+.user-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.danger-button:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  color: rgb(239, 68, 68);
+}
+
+.user-alert,
+.user-empty-state {
+  padding: 18px 20px;
+  color: var(--text);
+}
+
+.user-alert {
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  color: rgb(239, 68, 68);
+}
+
+.user-modal {
+  width: min(760px, calc(100vw - 32px));
+  background: var(--bg);
+}
+
+.user-modal .info-title {
+  margin-bottom: 0;
+}
+
+.user-modal .info-title h2 {
+  margin: 0;
+}
+
+.user-checkbox-field {
+  justify-content: end;
+}
+
+.user-checkbox {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-h);
+}
+
+.user-checkbox input {
+  width: auto;
+}
+
+.user-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.user-row:not(.user-head) {
+    cursor: default;
+}
+
+.user-panel {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    box-shadow: var(--shadow);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.user-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-table {
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+}
+
+.user-row {
+    display: grid;
+    grid-template-columns:
+        .5fr
+        1.8fr
+        1.5fr
+        2.4fr
+        1.2fr
+        120px
+        80px;
+
+    gap: 16px;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.user-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-row span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-row:last-child {
+    border-bottom: none;
+}
+
+.user-head {
+    background: var(--social-bg);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.user-id {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.user-name {
+    color: var(--text-h);
+    font-weight: 600;
+}
+
+.user-status {
+    display: inline-flex;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.user-status-active {
+    background: rgba(34, 197, 94, 0.14);
+    color: rgb(34, 197, 94);
+}
+
+.user-status-inactive {
+    background: rgba(239, 68, 68, 0.14);
+    color: rgb(239, 68, 68);
+}
+
+@media (max-width: 1100px) {
+    .user-row {
+        min-width: 1050px;
+    }
+}

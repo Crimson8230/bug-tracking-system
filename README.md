@@ -9,6 +9,11 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 - **Spring Security:** Handles authentication and authorization.
 - **Maven:** Dependency management and build automation.
 
+### Frontend Core
+- **React + TypeScript:** Frontend framework and type-safe UI development.
+- **Vite:** Fast frontend tooling and development server.
+- **CSS / Component-based UI:** Modular frontend structure.
+
 ### Data & Persistence
 - **PostgreSQL:** Primary relational database.
 - **Spring Data JPA:** ORM layer (Hibernate) for database interactions.
@@ -32,6 +37,7 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 * **Docker & Docker Compose:** Required for containerization and local database management.
 * **IDE:** IntelliJ, VsCode or Eclipse pick your poison 
 * **Lombok** Install Lombok plugin in your IDE otherwise getters/setters may appear missing
+* **Node.js (>=18 recommended):** Required for frontend development.
 
 ## Setup & Start
 
@@ -64,6 +70,8 @@ cd bug-tracking-system
 
    You can override the seeded admin with properties such as
    `app.dev.admin.username`, `app.dev.admin.email`, and `app.dev.admin.password`.
+
+4. **Start Frontend:** `cd frontend` `npm install` `npm run dev`
 
 ## API Documentation
 
