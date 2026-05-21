@@ -41,11 +41,29 @@
     {
       "title": "Dateiupload erlaubt falschen Dateityp",
       "description": "EXE-Dateien sollten beim Upload blockiert werden.",
-      "priority": "CRITICAL",
+      "priority": "HIGH",
       "status": "NEW",
       "category": "Security",
       "createdBy": "admin",
       "assignedTo": "admin"
+    },
+    {
+      "title": "Passwort-Reset E-Mail kommt nicht an",
+      "description": "Mehrere User melden, dass die E-Mail zum Zuruecksetzen des Passworts nicht zugestellt wird.",
+      "priority": "HIGH",
+      "status": "OPEN",
+      "category": "Backend",
+      "createdBy": "user",
+      "assignedTo": "admin"
+    },
+    {
+      "title": "Statusfilter merkt sich Auswahl nicht",
+      "description": "Nach dem Neuladen der Ticketuebersicht ist der ausgewaehlte Statusfilter wieder zurueckgesetzt.",
+      "priority": "MEDIUM",
+      "status": "OPEN",
+      "category": "Frontend",
+      "createdBy": "admin",
+      "assignedTo": "user"
     }
   ]
 }
