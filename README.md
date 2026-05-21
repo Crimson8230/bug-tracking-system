@@ -5,87 +5,132 @@ Issue management backend. Features a layered architecture, Spring Security, and 
 ## Tech Stack & Architecture
 
 ### Backend Core
+
 - **Java 21 / Spring Boot 3.x:** Core framework for the application.
 - **Spring Security:** Handles authentication and authorization.
 - **Maven:** Dependency management and build automation.
 
 ### Frontend Core
+
 - **React + TypeScript:** Frontend framework and type-safe UI development.
 - **Vite:** Fast frontend tooling and development server.
 - **CSS / Component-based UI:** Modular frontend structure.
 
 ### Data & Persistence
+
 - **PostgreSQL:** Primary relational database.
 - **Spring Data JPA:** ORM layer (Hibernate) for database interactions.
 - **H2 Database:** Lightweight in-memory database used for testing.
 - **Docker & Docker Compose:** Containerization for database and management tools.
 
 ### Integrated Dependencies (Spring Initializr)
+
 - **Spring Web:** For building RESTful API endpoints.
 - **Lombok:** Reduces boilerplate code (Generates getters, setters, etc.).
 - **Validation:** Ensures data integrity via annotations (e.g., `@NotNull`).
 - **SpringDoc OpenAPI:** Automatically generates Swagger UI documentation.
 
-
-
-
 ## Development Process
 
 ### 1. Prerequisites
 
-* **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
-* **Docker & Docker Compose:** Required for containerization and local database management.
-* **IDE:** IntelliJ, VsCode or Eclipse pick your poison 
-* **Lombok** Install Lombok plugin in your IDE otherwise getters/setters may appear missing
-* **Node.js (>=18 recommended):** Required for frontend development.
+- **Java 21 (JDK):** Ensure you have the Java Development Kit installed.
+- **Docker & Docker Compose:** Required for containerization and local database management.
+- **IDE:** IntelliJ, VsCode or Eclipse pick your poison
+- **Lombok** Install Lombok plugin in your IDE otherwise getters/setters may appear missing
+- **Node.js (>=18 recommended):** Required for frontend development.
 
-## Setup & Start
+# Setup & Start
 
-1. **Clone repository:**
+## Clone Repository
 
 ```bash
-git clone [https://github.com/Crimson8230/bug-tracking-system.git](https://github.com/Crimson8230/bug-tracking-system.git)
+git clone https://github.com/Crimson8230/bug-tracking-system.git
 cd bug-tracking-system
 ```
 
-2. **Start infrastructure:**
-   Make sure Docker is running and start the database:
-   `docker-compose up -d`
+## Start Application
 
-3. **Start application:**
-   Use the Maven Wrapper to build and start the app:
+Make sure Docker is running.
+Start the complete development environment:
 
-   `cd backend`
+```bash
+docker compose up --build
+```
 
-   **Windows (PowerShell):**
-   `.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"`
+This starts:
 
-   **Linux / Mac / Git Bash:**
-   `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev`
+- PostgreSQL database
+- pgAdmin
+- Spring Boot backend
+- React frontend
 
-   The `dev` profile seeds local-only bootstrap data if it does not exist yet:
-   - **Admin login:** `admin` / `admin123`
-   - **Roles:** `ADMIN`, `USER`
-   - **Category:** `General`
+---
 
-   You can override the seeded admin with properties such as
-   `app.dev.admin.username`, `app.dev.admin.email`, and `app.dev.admin.password`.
+# Local URLs
 
-4. **Start Frontend:** `cd frontend` `npm install` `npm run dev`
+## Frontend
 
-## API Documentation
+```text
+http://localhost:5173
+```
 
-Once the app is running, you can find the Swagger UI at:
-`http://localhost:8080/swagger-ui/index.html`
+## Backend API
 
-## Database Management
+```text
+http://localhost:8080
+```
 
-To visualize and manage the database, **pgAdmin 4** is provided via Docker.
+## Swagger UI
 
-1. **Access:** Open `http://localhost:8081`
-2. **pgAdmin Login:** `admin@admin.com` / `admin`
-3. **DB Access:** Click on the pre-configured `BugTracker-DB`.
-   - **Password:** `password`
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+## pgAdmin
+
+```text
+http://localhost:8081
+```
+
+Login:
+
+```text
+Email: admin@admin.com
+Password: admin
+```
+
+---
+
+# Development Profile
+
+The backend automatically starts with the `dev` profile.
+
+The dev profile seeds local-only bootstrap data if it does not exist yet.
+
+## Default Admin User
+
+```text
+Username: admin
+Password: admin123
+```
+
+## Seeded Roles
+
+- ADMIN
+- USER
+
+## Seeded Category
+
+- General
+
+You can override the seeded admin with properties such as:
+
+```properties
+app.dev.admin.username
+app.dev.admin.email
+app.dev.admin.password
+```
 
 ## Testing
 
