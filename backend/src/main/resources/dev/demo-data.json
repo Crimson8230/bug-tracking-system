@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@local.dev",
+      "password": "admin123",
+      "role": "ADMIN"
+    },
+    {
+      "username": "user",
+      "email": "user@local.dev",
+      "password": "user123",
+      "role": "USER"
+    }
+  ],
+  "categories": [
+    "General",
+    "Frontend",
+    "Backend",
+    "Security"
+  ],
+  "tickets": [
+    {
+      "title": "Login funktioniert nicht",
+      "description": "User kann sich trotz korrekter Zugangsdaten nicht anmelden.",
+      "priority": "HIGH",
+      "status": "NEW",
+      "category": "Backend",
+      "createdBy": "user",
+      "assignedTo": "admin"
+    },
+    {
+      "title": "Ticketliste lädt langsam",
+      "description": "Bei vielen Tickets dauert das Laden der Übersicht zu lange.",
+      "priority": "MEDIUM",
+      "status": "IN_PROGRESS",
+      "category": "Frontend",
+      "createdBy": "user",
+      "assignedTo": "admin"
+    },
+    {
+      "title": "Dateiupload erlaubt falschen Dateityp",
+      "description": "EXE-Dateien sollten beim Upload blockiert werden.",
+      "priority": "CRITICAL",
+      "status": "NEW",
+      "category": "Security",
+      "createdBy": "admin",
+      "assignedTo": "admin"
+    }
+  ]
+}
